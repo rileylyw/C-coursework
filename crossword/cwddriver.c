@@ -1,13 +1,10 @@
 #include "crossword.h"
 
-void print_crossword(const crossword* c);
-
 int main(void)
 {
    test();
    char str[BIGSTR];
    crossword c;
-
 
    // Invalid (string NULL)
    assert(!str2crossword(1, NULL, &c));
@@ -22,40 +19,29 @@ int main(void)
    // Invalid (size too large)
    assert(!str2crossword(500, "..X....X.XX.X.X.XX.X......X..XX.XX.........XX.XX.", &c));
 
-
-
    // Valid Crosswords 
    assert(str2crossword(3, ".........", &c));
    getcluestring(&c, str);
    assert(strcmp("A-1-4-5|D-1-2-3", str)==0);
-   // // All squares are shared (checked)
+   // All squares are shared (checked)
    assert(getchecked(c)==100);
-
 
    // Example from handout
    assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
    getcluestring(&c, str);
    assert(strcmp("A-1-3-5-6|D-1-2-3-4", str)==0);
    assert(getchecked(c)==53);
-   print_crossword(&c);
-   printf("%s\n", str);
-   printf("\n");
 
    assert(str2crossword(5, "X...X...............X...X", &c));
    getcluestring(&c, str);
-   assert(strcmp("A-1-4-6-7-8|D-1-2-3-4-5", str)==0); //look for the patterns
+   assert(strcmp("A-1-4-6-7-8|D-1-2-3-4-5", str)==0);
    assert(getchecked(c)==100);
-   print_crossword(&c);
-   printf("%s\n", str);
-   printf("\n");
 
    // Can be ' ' and '*', not just '.' and 'X'
    assert(str2crossword(5, "*   *               *   *", &c));
    getcluestring(&c, str);
    assert(strcmp("A-1-4-6-7-8|D-1-2-3-4-5", str)==0);
    assert(getchecked(c)==100);
-   // print_crossword(&c);
-   // printf("\n");
 
    assert(str2crossword(7, "..X....X.XX.X.X.XX.X......X..XX.XX.........XX.XX.", &c));
    getcluestring(&c, str);
@@ -81,4 +67,5 @@ int main(void)
    getcluestring(&c, str);
    assert(strcmp("A-1-5-6-7-8-11-12-13|D-2-3-4-5-9-10", str)==0);
    assert(getchecked(c)==43);
+
 }
