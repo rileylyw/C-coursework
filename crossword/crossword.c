@@ -106,17 +106,17 @@ int getchecked(crossword c){
          if(c.arr[i][j]==' ' || c.arr[i][j]=='.'){
             if(matrix[i][j]==0){
                if(i<c.sz-1 && (c.arr[i+1][j]==' ' || c.arr[i+1][j]=='.')){ //if next row blank
-                  markDown(&c,matrix,i,j); //+2 to matrix
+                  markDown(&c, matrix, i, j); //+2 to matrix
                }
                if(j<c.sz-1 && (c.arr[i][j+1]==' ' || c.arr[i][j+1]=='.')){ //if next col blank
-                  markAcross(&c,matrix,i,j); //+1 to matrix
+                  markAcross(&c, matrix, i, j); //+1 to matrix
                }
             }
             else if(matrix[i][j]==1 && i<c.sz-1 && (c.arr[i+1][j]==' ' || c.arr[i+1][j]=='.')){ //if already has col and next row blank
-               markDown(&c,matrix,i,j);
+               markDown(&c, matrix, i, j);
             }
             else if(matrix[i][j]==2 && j<c.sz-1 && (c.arr[i][j+1]==' ' || c.arr[i][j+1]=='.')){ //if already has row and next col blank
-               markAcross(&c,matrix,i,j);
+               markAcross(&c, matrix, i, j);
             }
          }
       }
