@@ -290,7 +290,7 @@ void test(void)
    assert(matrix4[5][1]==3);
    assert(matrix4[5][2]==1);
    assert(matrix4[5][4]==3);
-   freeMartix(matrix4, 5);
+   freeMartix(matrix4, 8);
 
    // test other corner cases
    crossword c3;
