@@ -2,8 +2,8 @@
 
 int** newMatrix(int size);
 void freeMartix(int** matrix, int size);
-void markAcross(const crossword* cw, int **matrix, int y, int x);
-void markDown(const crossword* cw, int **matrix, int y, int x);
+void markAcross(const crossword* cw, int **matrix, int x, int y);
+void markDown(const crossword* cw, int **matrix, int x, int y);
 int append(char* string, int length, int startCount);
 void merge(char* s1, char* s2, char* string);
 
@@ -25,9 +25,9 @@ bool str2crossword(int sz, char* ip, crossword* cw){
    if((int)strlen(ip)!=sz*sz || sz<0){
       return false;
    }
-   for(int j=0; j<sz; j++){
-      for(int i=0; i<sz; i++){
-         cw->arr[j][i]=ip[j*sz+i];
+   for(int i=0; i<sz; i++){
+      for(int j=0; j<sz; j++){
+         cw->arr[i][j]=ip[i*sz+j];
       }
    }
    cw->sz=sz;
@@ -36,31 +36,31 @@ bool str2crossword(int sz, char* ip, crossword* cw){
 
 int getchecked(crossword c){
    int** matrix=newMatrix(c.sz);
-   for(int j=0; j<c.sz; j++){
-      for(int i=0; i<c.sz; i++){
-         if(c.arr[j][i]==' ' || c.arr[j][i]=='.'){
-            if(matrix[j][i]==0){
-               if(j<c.sz-1 && (c.arr[j+1][i]==' ' || c.arr[j+1][i]=='.')){ //if next row blank
-                  markDown(&c, matrix, j, i); //+2 to matrix
+   for(int i=0; i<c.sz; i++){
+      for(int j=0; j<c.sz; j++){
+         if(c.arr[i][j]==' ' || c.arr[i][j]=='.'){
+            if(matrix[i][j]==0){
+               if(i<c.sz-1 && (c.arr[i+1][j]==' ' || c.arr[i+1][j]=='.')){ //if next row blank
+                  markDown(&c, matrix, i, j); //+2 to matrix
                }
-               if(i<c.sz-1 && (c.arr[j][i+1]==' ' || c.arr[j][i+1]=='.')){ //if next col blank
-                  markAcross(&c, matrix, j, i); //+1 to matrix
+               if(j<c.sz-1 && (c.arr[i][j+1]==' ' || c.arr[i][j+1]=='.')){ //if next col blank
+                  markAcross(&c, matrix, i, j); //+1 to matrix
                }
             }
-            else if(matrix[j][i]==1 && j<c.sz-1 && (c.arr[j+1][i]==' ' || c.arr[j+1][i]=='.')){ //if already has col and next row blank
-               markDown(&c, matrix, j, i);
+            else if(matrix[i][j]==1 && i<c.sz-1 && (c.arr[i+1][j]==' ' || c.arr[i+1][j]=='.')){ //if already has col and next row blank
+               markDown(&c, matrix, i, j);
             }
-            else if(matrix[j][i]==2 && i<c.sz-1 && (c.arr[j][i+1]==' ' || c.arr[j][i+1]=='.')){ //if already has row and next col blank
-               markAcross(&c, matrix, j, i);
+            else if(matrix[i][j]==2 && j<c.sz-1 && (c.arr[i][j+1]==' ' || c.arr[i][j+1]=='.')){ //if already has row and next col blank
+               markAcross(&c, matrix, i, j);
             }
          }
       }
    }
    int sharedCount=0, full=0;
-   for(int j=0; j<c.sz; j++){
-      for(int i=0; i<c.sz; i++){
-         sharedCount+=(matrix[j][i]==3?1:0); //shared squares will be 3
-         full+=(matrix[j][i]==0?1:0); //full squares will be 0
+   for(int i=0; i<c.sz; i++){
+      for(int j=0; j<c.sz; j++){
+         sharedCount+=(matrix[i][j]==3?1:0); //shared squares will be 3
+         full+=(matrix[i][j]==0?1:0); //full squares will be 0
       }
    }
    freeMartix(matrix, c.sz);
@@ -71,26 +71,26 @@ void getcluestring(const crossword* c, char* ans){
    int** matrix=newMatrix(c->sz);
    char across[BIGSTR]={'A'}, down[BIGSTR]={'D'};
    int markNumber=0, acrossNumber=1, downNumber=1;
-   for(int j=0; j<c->sz; j++){
-      for(int i=0; i<c->sz; i++){
-         if(c->arr[j][i]==' ' || c->arr[j][i]=='.'){
+   for(int i=0; i<c->sz; i++){
+      for(int j=0; j<c->sz; j++){
+         if(c->arr[i][j]==' ' || c->arr[i][j]=='.'){
             markNumber++;
-            if(matrix[j][i]==0){
-               if(j<c->sz-1 && (c->arr[j+1][i]==' ' || c->arr[j+1][i]=='.')){ //if next row blank
-                  markDown(c, matrix, j, i); //+2 to matrix
+            if(matrix[i][j]==0){
+               if(i<c->sz-1 && (c->arr[i+1][j]==' ' || c->arr[i+1][j]=='.')){ //if next row blank
+                  markDown(c, matrix, i, j); //+2 to matrix
                   downNumber=append(down, downNumber, markNumber);
                }
-               if(i<c->sz-1 && (c->arr[j][i+1]==' ' || c->arr[j][i+1]=='.')){ //if next col blank
-                  markAcross(c, matrix, j, i); //+1 to matrix
+               if(j<c->sz-1 && (c->arr[i][j+1]==' ' || c->arr[i][j+1]=='.')){ //if next col blank
+                  markAcross(c, matrix, i, j); //+1 to matrix
                   acrossNumber=append(across, acrossNumber, markNumber);
                }
             }
-            else if(matrix[j][i]==1 && j<c->sz-1 && (c->arr[j+1][i]==' ' || c->arr[j+1][i]=='.')){ //if already has col and next row blank
-               markDown(c, matrix, j, i);
+            else if(matrix[i][j]==1 && i<c->sz-1 && (c->arr[i+1][j]==' ' || c->arr[i+1][j]=='.')){ //if already has col and next row blank
+               markDown(c, matrix, i, j);
                downNumber=append(down, downNumber, markNumber);
             }
-            else if(matrix[j][i]==2 && i<c->sz-1 && (c->arr[j][i+1]==' ' || c->arr[j][i+1]=='.')){ //if already has row and next col blank
-               markAcross(c, matrix, j, i);
+            else if(matrix[i][j]==2 && j<c->sz-1 && (c->arr[i][j+1]==' ' || c->arr[i][j+1]=='.')){ //if already has row and next col blank
+               markAcross(c, matrix, i, j);
                acrossNumber=append(across, acrossNumber, markNumber);
             }
             else{
@@ -122,20 +122,20 @@ void freeMartix(int** matrix, int size){
 }
 
 // +1 to matrix square if it's not full
-void markAcross(const crossword* cw, int **matrix, int y, int x){
-   assert(y<=cw->sz && y>=0 && x<=cw->sz && x>=0); //avoid possible segfault
-   while(x<cw->sz && !(cw->arr[y][x]=='*' || cw->arr[y][x]=='X')){
-      matrix[y][x]+=1;
-      x++;
+void markAcross(const crossword* cw, int **matrix, int x, int y){
+   assert(x<=cw->sz && x>=0 && y<=cw->sz && y>=0); //avoid possible segfault
+   while(y<cw->sz && !(cw->arr[x][y]=='*' || cw->arr[x][y]=='X')){
+      matrix[x][y]+=1;
+      y++;
    }
 }
 
 // +2 to matrix square if it's not full
-void markDown(const crossword* cw, int **matrix, int y, int x){
-   assert(y<=cw->sz && y>=0 && x<=cw->sz && x>=0);
-   while(y<cw->sz && !(cw->arr[y][x]=='*' || cw->arr[y][x]=='X')){
-      matrix[y][x]+=2;
-      y++;
+void markDown(const crossword* cw, int **matrix, int x, int y){
+   assert(x<=cw->sz && x>=0 && y<=cw->sz && y>=0);
+   while(x<cw->sz && !(cw->arr[x][y]=='*' || cw->arr[x][y]=='X')){
+      matrix[x][y]+=2;
+      x++;
    }
 }
 
@@ -177,7 +177,6 @@ void merge(char* s1, char* s2, char* string){
 
 void test(void)
 {
-
    // test matrix malloc and free
    int** matrix=newMatrix(5);
    assert(matrix!=NULL);
@@ -191,7 +190,7 @@ void test(void)
 
    // test string functions
    char s11[GRID]="A-1-4", s12[GRID]="D-1-2-3", s13[GRID];
-   assert(append(s11, 5, 5)==7); //append '5' to s11, original length of s11 is 5
+   assert(append(s11, 5, 5)==7); //append '5' to s11
    assert(strcmp("A-1-4-5", s11)==0);
    assert(strcmp("A-!@#-5sdfasd", s11)!=0);
    merge(s11, s12, s13);
@@ -300,4 +299,3 @@ void test(void)
    assert(!str2crossword(12, "ABCDABCDABCDABCD", &c3));
    assert(!str2crossword(-5.0, "*   *               *   *", &c3));
 }
-
