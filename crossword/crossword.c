@@ -1,5 +1,12 @@
 #include "crossword.h"
 
+int** newMatrix(int size);
+void freeMartix(int** matrix, int size);
+void markAcross(const crossword* cw, int **matrix, int x, int y);
+void markDown(const crossword* cw, int **matrix, int x, int y);
+int append(char* string, int length, int startCount);
+void merge(char* s1, char* s2, char* string);
+
 // Might be useful to be able to print them
 // to hep with debugging
 void print_crossword(const crossword* c){
@@ -9,78 +16,6 @@ void print_crossword(const crossword* c){
       }
       printf("\n");
    }
-}
-
-// for storing numbers
-// if across: +1, if down: +2
-// therefore, shared sqaures will be 3
-int** newMatrix(int size){
-   int** matrix=(int**)malloc(sizeof(int*)*size);
-   for(int i=0; i<size; i++){
-      matrix[i]=(int*)calloc(size,sizeof(int)); //sqaures initialized to 0
-   }
-   return matrix;
-}
-
-void freeMartix(int** matrix, int size){
-   for(int i=0; i<size; i++){
-      free(matrix[i]);
-   }
-   free(matrix);
-}
-
-// +1 to matrix square if it's not full
-void markAcross(const crossword* cw, int **matrix, int x, int y){
-   assert(x<=cw->sz && x>=0 && y<=cw->sz && y>=0); //avoid possible segfault
-   while(y<cw->sz && !(cw->arr[x][y]=='*' || cw->arr[x][y]=='X')){
-      matrix[x][y]+=1;
-      y++;
-   }
-}
-
-// +2 to matrix square if it's not full
-void markDown(const crossword* cw, int **matrix, int x, int y){
-   assert(x<=cw->sz && x>=0 && y<=cw->sz && y>=0);
-   while(x<cw->sz && !(cw->arr[x][y]=='*' || cw->arr[x][y]=='X')){
-      matrix[x][y]+=2;
-      x++;
-   }
-}
-
-// append start count to across and down arrays respectively
-// return length of strings
-int append(char* string, int length, int startCount){
-   int newLength=length;
-   char ASCII[10];
-   string[newLength++]='-';
-   string[newLength]='\0';
-   int i=0;
-   while(startCount!=0){ //turn int to string
-      int temp=startCount%10;
-      ASCII[i++]=(char)(temp+'0');
-      startCount=startCount/10;
-   }
-   for(int j=i-1; j>=0; j--){
-      string[newLength++]=ASCII[j];
-   }
-   string[newLength]='\0';
-   return newLength;
-}
-
-// merge across and down arrays
-void merge(char* s1, char* s2, char* string){
-   int i=0;
-   while(s1[i]!='\0'){
-      string[i]=s1[i];
-      i++;
-   }
-   string[i++]='|';
-   int j=0;
-   while(s2[j]!='\0'){
-      string[i+j]=s2[j];
-      j++;
-   }
-   string[i+j]='\0';
 }
 
 bool str2crossword(int sz, char* ip, crossword* cw){
@@ -166,6 +101,78 @@ void getcluestring(const crossword* c, char* ans){
    }
    merge(across, down, ans);
    freeMartix(matrix, c->sz);
+}
+
+// for storing numbers
+// if across: +1, if down: +2
+// therefore, shared sqaures will be 3
+int** newMatrix(int size){
+   int** matrix=(int**)malloc(sizeof(int*)*size);
+   for(int i=0; i<size; i++){
+      matrix[i]=(int*)calloc(size,sizeof(int)); //sqaures initialized to 0
+   }
+   return matrix;
+}
+
+void freeMartix(int** matrix, int size){
+   for(int i=0; i<size; i++){
+      free(matrix[i]);
+   }
+   free(matrix);
+}
+
+// +1 to matrix square if it's not full
+void markAcross(const crossword* cw, int **matrix, int x, int y){
+   assert(x<=cw->sz && x>=0 && y<=cw->sz && y>=0); //avoid possible segfault
+   while(y<cw->sz && !(cw->arr[x][y]=='*' || cw->arr[x][y]=='X')){
+      matrix[x][y]+=1;
+      y++;
+   }
+}
+
+// +2 to matrix square if it's not full
+void markDown(const crossword* cw, int **matrix, int x, int y){
+   assert(x<=cw->sz && x>=0 && y<=cw->sz && y>=0);
+   while(x<cw->sz && !(cw->arr[x][y]=='*' || cw->arr[x][y]=='X')){
+      matrix[x][y]+=2;
+      x++;
+   }
+}
+
+// append start count to across and down arrays respectively
+// return length of strings
+int append(char* string, int length, int startCount){
+   int newLength=length;
+   char ASCII[10];
+   string[newLength++]='-';
+   string[newLength]='\0';
+   int i=0;
+   while(startCount!=0){ //turn int to string
+      int temp=startCount%10;
+      ASCII[i++]=(char)(temp+'0');
+      startCount=startCount/10;
+   }
+   for(int j=i-1; j>=0; j--){
+      string[newLength++]=ASCII[j];
+   }
+   string[newLength]='\0';
+   return newLength;
+}
+
+// merge across and down arrays
+void merge(char* s1, char* s2, char* string){
+   int i=0;
+   while(s1[i]!='\0'){
+      string[i]=s1[i];
+      i++;
+   }
+   string[i++]='|';
+   int j=0;
+   while(s2[j]!='\0'){
+      string[i+j]=s2[j];
+      j++;
+   }
+   string[i+j]='\0';
 }
 
 void test(void)
