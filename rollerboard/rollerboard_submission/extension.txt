@@ -1,0 +1,3 @@
+I don't have time to code the extension part, but I have thought about how to do it in place of BFS:
+
+Give the nodes/children boards some weight (e.g. distance travelled) to decide how far they are from the correct answer. Take that move as the next step, instead of looping through the entire list of boards.

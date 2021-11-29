@@ -5,7 +5,7 @@ SANITIZE= $(COMMON) -fsanitize=undefined -fsanitize=address $(DEBUG)
 VALGRIND= $(COMMON) $(DEBUG)
 PRODUCTION= $(COMMON) -O3
 LDLIBS = -lm
-CFLAGS=$(COMMON)
+CFLAGS=$(SANITIZE) 
 
 # -CC=gcc = sets the compiler
 # -CFALGS=... = sets the flags to compile with

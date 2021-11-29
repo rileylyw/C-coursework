@@ -1,0 +1,45 @@
+int lengthOfLongestSubstring(char * s){
+    int alphabet[128];
+    int start = 0;
+    int len = 0;
+    int count = 0;
+    int i,key;
+    for( i = 0; i < 128; i++ )
+        alphabet[i] = -1;
+    i = 0;
+    while( s[i] != '\0' ) {
+        key = (int)s[i];
+        if( alphabet[key] != -1 && alphabet[key] >= start ) { // repeat character appear
+            len = i - start;
+            start = alphabet[key] + 1;
+            if( len > count )
+                count = len;
+        }
+        alphabet[key] = i++;
+    }
+    len = i - start;
+    if( len > count )
+        count = len;
+    return count;
+}
+
+Example 1:
+
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+Example 2:
+
+Input: s = "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+Example 3:
+
+Input: s = "pwwkew"
+Output: 3
+Explanation: The answer is "wke", with the length of 3.
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+Example 4:
+
+Input: s = ""
+Output: 0
