@@ -20,14 +20,14 @@ int main(void)
    // assert(!boolarr_set(NULL, 1, true));
    // assert(boolarr_issame(NULL, NULL));
    // assert(!boolarr_tostring(NULL, str));
-   // assert(boolarr_count1s(NULL)==0);
+   assert(boolarr_count1s(NULL)==0);
    ba = boolarr_init();
    printf("cap: %d\n", ba->capacity);
    printf("size: %d\n", ba->size);
    // printf("d: %c\n", ba->a[0].d);
    // assert(!boolarr_issame(NULL, ba));
    // assert(!boolarr_issame(ba, NULL));
-   // assert(boolarr_count1s(ba)==0);
+   assert(boolarr_count1s(ba)==0);
    // assert(!boolarr_tostring(ba, NULL));
    // assert(boolarr_size(ba)==0);
    // assert(boolarr_set(ba, 1, true));
@@ -52,13 +52,7 @@ int main(void)
    // assert(!b);
    // assert(boolarr_get(ba,126,&b));
    // assert(!b);
-   // assert(boolarr_get(ba,127,&b));
-   // assert(b);
-   // assert(boolarr_get(ba,128,&b));
-   // assert(b);
-   // assert(boolarr_get(ba,191,&b));
-   // assert(b);
-   // assert(boolarr_get(ba,194,&b));
+   // assert(bbooloolarr_get(ba,194,&b));
    // assert(b);
 
    // bc = boolarr_clone(ba);
@@ -99,28 +93,19 @@ int main(void)
    // boolarr_free(ba);
    // boolarr_free(bb);
    // boolarr_free(bc);
-
+char
    // /* Bitwise */
    ba = boolarr_initstr("100100100");
-   // printf("d: %d\n", bb->a[1].valid_bit);
+   // printf("d: %u\n", ba->a[10]);
+   // assert(boolarr_size(ba)==9);
+   assert(boolarr_count1s(ba)==3);
    assert(ba);
    bb = boolarr_initstr("110110110");
    assert(bb);
 
    // bc = boolarr_bitwise(ba, bb, and);
    // assert(bc);
-   // assert(boolarr_tostring(bc, str));
-   // assert(strcmp(str, "100100100")==0);
-   // assert(boolarr_issame(ba, bc));
-   // boolarr_free(bc);
-
-   // bc = boolarr_bitwise(ba, bb, or);
-   // assert(bc);
-   // assert(boolarr_tostring(bc, str));
-   // assert(strcmp(str, "110110110")==0);
-   // assert(boolarr_issame(bb, bc));
-   // boolarr_free(bc);
-
+   // assert(boolarr_tostsize: 
    // bc = boolarr_bitwise(ba, bb, xor);
    // assert(bc);
    // assert(boolarr_tostring(bc, str));
@@ -129,6 +114,6 @@ int main(void)
    // boolarr_free(ba);
    // boolarr_free(bb);
    // boolarr_free(bc);
-
+   printf("%s\n", "end test");
    return 0;
 }
