@@ -1,6 +1,7 @@
+#include <math.h>
 #include <stdbool.h>
 
-typedef unsigned char bit;
+typedef unsigned char byte;
 
 #define BYTE 8
 #define SCALEFACTOR 2
@@ -11,7 +12,7 @@ typedef unsigned char bit;
 // } boolean;
 
 typedef struct boolarr{
-    bit* a;
+    byte* a;
     int size; //valid bit
     int capacity;
 } boolarr;

@@ -30,7 +30,7 @@ int main(void)
    assert(boolarr_count1s(ba)==0);
    // assert(!boolarr_tostring(ba, NULL));
    // assert(boolarr_size(ba)==0);
-   // assert(boolarr_set(ba, 1, true));
+   assert(boolarr_set(ba, 1, true));
    // assert(boolarr_get(ba, 0, &b));
    // assert(!b);
    // assert(boolarr_set(ba, 5, true));
@@ -93,15 +93,14 @@ int main(void)
    // boolarr_free(ba);
    // boolarr_free(bb);
    // boolarr_free(bc);
-char
    // /* Bitwise */
    ba = boolarr_initstr("100100100");
-   // printf("d: %u\n", ba->a[10]);
+   printf("d: %u\n", ba->a[0]);
    // assert(boolarr_size(ba)==9);
-   assert(boolarr_count1s(ba)==3);
-   assert(ba);
-   bb = boolarr_initstr("110110110");
-   assert(bb);
+   // assert(boolarr_count1s(ba)==3);
+   // assert(ba);
+   // bb = boolarr_initstr("110110110");
+   // assert(bb);
 
    // bc = boolarr_bitwise(ba, bb, and);
    // assert(bc);
