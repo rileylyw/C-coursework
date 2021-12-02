@@ -45,9 +45,10 @@ boolarr* boolarr_clone(const boolarr* ba){
 unsigned int boolarr_size(const boolarr* ba){
     if(ba==NULL){
         return 0;
-    ba->capacity = BYTE;
     }
-    return ba->size;
+    // ba->capacity = BYTE;
+    // }
+    // return ba->size;
 }
 
 unsigned int boolarr_count1s(const boolarr* ba){
@@ -84,9 +85,12 @@ bool boolarr_set(boolarr* ba, const unsigned int n, const bool b){
     // printf("a: %u\n", ba->a[0]);
 }
 
-// bool boolarr_get(const boolarr* ba, const unsigned int n, bool* b){
+bool boolarr_get(const boolarr* ba, const unsigned int n, bool* b){
+    if(ba == NULL){
+        return false;
+    }
     
-// }
+}
 
 
 

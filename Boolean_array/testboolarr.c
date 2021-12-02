@@ -14,7 +14,7 @@ int main(void)
    unsigned int i;
    bool b2;
 
-   // assert(boolarr_size(NULL)==0);
+   assert(boolarr_size(NULL)==0);
    // assert(!boolarr_get(NULL, 0, &b));
    // assert(!boolarr_set(NULL, 0, true));
    // assert(!boolarr_set(NULL, 1, true));
