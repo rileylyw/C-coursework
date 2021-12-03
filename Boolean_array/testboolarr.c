@@ -15,22 +15,21 @@ int main(void)
    bool b2;
 
    assert(boolarr_size(NULL)==0);
-   // assert(!boolarr_get(NULL, 0, &b));
-   // assert(!boolarr_set(NULL, 0, true));
-   // assert(!boolarr_set(NULL, 1, true));
+   assert(!boolarr_get(NULL, 0, &b));
+   assert(!boolarr_set(NULL, 0, true));
+   assert(!boolarr_set(NULL, 1, true));
    // assert(boolarr_issame(NULL, NULL));
-   // assert(!boolarr_tostring(NULL, str));
+   assert(!boolarr_tostring(NULL, str));
    assert(boolarr_count1s(NULL)==0);
    ba = boolarr_init();
-   printf("cap: %d\n", ba->capacity);
-   printf("size: %d\n", ba->size);
-   // printf("d: %c\n", ba->a[0].d);
+   // printf("cap: %d\n", ba->capacity);
+   // printf("size: %d\n", ba->size);
    // assert(!boolarr_issame(NULL, ba));
    // assert(!boolarr_issame(ba, NULL));
    assert(boolarr_count1s(ba)==0);
    // assert(!boolarr_tostring(ba, NULL));
    // assert(boolarr_size(ba)==0);
-   assert(boolarr_set(ba, 1, true));
+   // assert(boolarr_set(ba, 1, true));
    // assert(boolarr_get(ba, 0, &b));
    // assert(!b);
    // assert(boolarr_set(ba, 5, true));
@@ -38,11 +37,12 @@ int main(void)
    // assert(boolarr_tostring(ba, str));
    // assert(strcmp(str, "0100010")==0);
 
-   // assert(boolarr_set(ba, 0, true));
-   // assert(boolarr_set(ba, 127, true));
-   // assert(boolarr_set(ba, 128, true));
-   // assert(boolarr_set(ba, 191, true));
-   // assert(boolarr_set(ba, 194, true));
+   assert(boolarr_set(ba, 0, true));
+   assert(boolarr_set(ba, 127, true));
+   assert(boolarr_set(ba, 128, true));
+   assert(boolarr_set(ba, 191, true));
+   assert(boolarr_set(ba, 194, true));
+   // printf("a: %u\n", ba->a[0]);
 
    // assert(boolarr_print(ba));
 
@@ -95,7 +95,7 @@ int main(void)
    // boolarr_free(bc);
    // /* Bitwise */
    ba = boolarr_initstr("100100100");
-   printf("d: %u\n", ba->a[0]);
+   // printf("d: %u\n", ba->a[0]);
    // assert(boolarr_size(ba)==9);
    // assert(boolarr_count1s(ba)==3);
    // assert(ba);

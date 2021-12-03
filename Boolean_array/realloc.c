@@ -65,15 +65,16 @@ unsigned int boolarr_count1s(const boolarr* ba){
 }
 
 bool boolarr_set(boolarr* ba, const unsigned int n, const bool b){
-    if(ba->a == NULL){
-        ba->a = (byte*)ncalloc(1, 0);
+    int scale = (int)ceil((double)n/BYTE);
+    if(ba == NULL){
+        return false;
     }
-    if((int)ceil((double)n/BYTE) >= ba->capacity){
-        // ba->a = (bit*)nremalloc(ba->a, sizeof(bit)*ba->capacity*SCALEFACTOR);
-        ba->a = (byte*)nrecalloc(ba->a, sizeof(byte)*ba->capacity, sizeof(byte)*ba->capacity*(int)ceil((double)n/BYTE));
-        // ba->a = (byte*)nrecalloc(ba->a, sizeof(byte)*ba->capacity, sizeof(byte)*ba->capacity*scale);
-        // ba->capacity = ba->capacity*scale;
-        ba->capacity = ba->capacity*(int)ceil((double)n/BYTE);
+    if(ba->a == NULL){
+        ba->a = (byte*)ncalloc(1, sizeof(byte));
+    }
+    if(scale >= ba->capacity){
+        ba->a = (byte*)nrecalloc(ba->a, sizeof(byte)*ba->capacity, sizeof(byte)*ba->capacity*scale);
+        ba->capacity = ba->capacity*scale;
     }
     if(b){
         ba->a[(int)n/BYTE] = ba->a[(int)n/BYTE] | (1<<(n-1)%BYTE);
@@ -81,8 +82,8 @@ bool boolarr_set(boolarr* ba, const unsigned int n, const bool b){
     else{
         ba->a[(int)n/BYTE] = ba->a[(int)n/BYTE] & ~(1<<(n-1)%BYTE);
     }
-    return true;
     // printf("a: %u\n", ba->a[0]);
+    return true;
 }
 
 bool boolarr_get(const boolarr* ba, const unsigned int n, bool* b){
@@ -92,8 +93,22 @@ bool boolarr_get(const boolarr* ba, const unsigned int n, bool* b){
     
 }
 
+bool boolarr_issame(const boolarr* b1, const boolarr* b2){
+    // if((b1 || b2) == NULL){
+    //     return false;
+    // }
+}
 
 
+bool boolarr_tostring(const boolarr* ba, char* str){
+    if(ba == NULL){
+        return false;
+    }
+}
+
+bool boolarr_print(const boolarr* ba){
+    
+}
 
 
 
