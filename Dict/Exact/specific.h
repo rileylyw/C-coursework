@@ -1,14 +1,14 @@
 #include "../dict.h"
 
-typedef struct data{
-    bool occupied;
+typedef struct node{
     char* word;
-    struct data* next;
-} data;
+    struct node* next;
+} node;
 
-typedef struct dict{
-    data* hash;
+struct dict{
+    node** hash;
     int size;
-} dict;
+};
 
-int hash(unsigned int sz, char *s);
+int hash(unsigned int sz, const char *s);
+node* allocateData(const char *s);

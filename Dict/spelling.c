@@ -27,22 +27,26 @@ int main(int argc, char* argv[])
          assert(dict_add(x, str));
       }
    }while(!done);
+   // print(x);
    fclose(fp);
 
    fp = nfopen(argv[2], "rt");
    done = false;
+   int count = 0;
    do{
       if(fscanf(fp, "%s", str) != 1){
          done = true;
       }
       if(dict_spelling(x, str)==false){
          printf("Misspelt : %s\n", str);
+         count++;
          // This is a new word, don't want to see it again
          assert(dict_add(x, str));
       }
    }while(!done);
    fclose(fp);
-
+   printf("count: %d\n", count);
+   // print(x);
    dict_free(x);
    return EXIT_SUCCESS;
 }

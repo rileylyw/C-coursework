@@ -16,7 +16,9 @@ int main(void)
    dict* d = dict_init(50);
    assert(dict_add(d, "one"));
    assert(dict_add(d, "one"));
+   assert(dict_add(d, "one"));
    assert(dict_add(d, "two"));
+   print(d);
 
    assert(dict_spelling(d, "one"));
    assert(dict_spelling(d, "two"));

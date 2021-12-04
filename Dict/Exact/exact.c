@@ -1,10 +1,13 @@
 #include "specific.h"
 
 void test(void){
+    int x=hash(50, "one");
+    printf("x: %d\n", x);
+    assert(hash(10, "hello") == 3);
     return;
 }
 
-int hash(unsigned int sz, char *s){
+int hash(unsigned int sz, const char *s){ //sz=size of space
     unsigned long hash = 5381;
     int c;
     while((c = (*s++))){
@@ -16,28 +19,82 @@ int hash(unsigned int sz, char *s){
 dict* dict_init(unsigned int maxwords){
     test();
     dict* d = (dict*) ncalloc(1, sizeof(dict));
-    d->hash = (data*) ncalloc(d->size, sizeof(data));
+    d->size = maxwords * 2; //twice the size
+    d->hash = (node**) ncalloc(d->size, sizeof(node*));
     return d;
 }
 
 bool dict_add(dict* x,  const char* s){
-    int hashValue = hash(x->size, s);
-    if(x->hash->word == NULL){
-        x->hash->word = (char*) ncalloc(strlen(s)+1, sizeof(char));
-    }
     if(x == NULL){
         return false;
     }
-    if(x->hash->word == NULL){
-        x->hash[hashValue].next = allocateData(s);
+    int hashValue = hash(x->size, s);
+    if(x->hash[hashValue] == NULL){
+        x->hash[hashValue] = allocateData(s);
+        return true;
+    }
+    else{
+        node* temp = x->hash[hashValue];
+        // if(temp->word != s){ //if repeated dont store
+            while(temp->next){
+                temp = temp->next;
+            }
+            temp->next = allocateData(s);
+        // }
         return true;
     }
 }
 
-data* allocateData(char *s){
-    data* p;
-    p = (data*) ncalloc(1, sizeof(data));
+node* allocateData(const char *s){
+    node* p;
+    p = (node*) ncalloc(1, sizeof(node));
+    p->word = (char*) ncalloc(strlen(s)+1, sizeof(char));
     strcpy(p->word, s);
+    // p->word = s;
     p->next = NULL;
     return p;
+}
+
+bool dict_spelling(dict* x, const char* s){
+    if(x == NULL){
+        return false;
+    }
+    int hashValue = hash(x->size, s);
+    node* temp = x->hash[hashValue];
+    while(temp){
+        if(strcmp(temp->word, s)==0){
+        // if(temp->word == s){
+            return true;
+        }
+        temp = temp->next;
+    }
+    return false;
+}
+
+void dict_free(dict* x){
+    node* temp;
+    for(int i=0; i<x->size; i++){
+        while(x->hash[i] != NULL){
+            temp = x->hash[i];
+            x->hash[i] = x->hash[i]->next;
+            free(temp->word);
+            free(temp);
+        }
+    }
+    free(x->hash);
+    free(x);
+}
+
+
+void print(dict* x){
+    int i;
+    for(i = 0; i < x->size; i++){
+        node* temp = x->hash[i];
+        printf("x->hash[%d]-->", i);
+        while(temp)        {
+            printf("%s -->",temp->word);
+            temp = temp->next;
+        }
+        printf("NULL\n");
+    }
 }
