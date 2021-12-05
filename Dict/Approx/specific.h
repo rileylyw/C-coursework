@@ -1,16 +1,12 @@
 #include "../dict.h"
 
 #define KHASHES 11
-
-typedef struct node{
-    char* word;
-    struct node* next;
-} node;
+#define SCALE 20 
 
 struct dict{
-    node** hash;
     int size;
+    bool* bitarray;
 };
 
-int hash(unsigned int sz, const char *s);
-node* allocateData(const char *s);
+unsigned long* _hashes(unsigned int sz, const char* s);
+int _hash(const char *s);

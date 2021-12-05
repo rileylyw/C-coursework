@@ -2,6 +2,8 @@
     "files.associations": {
         "stdbool.h": "c",
         "string": "c",
-        "array": "c"
+        "array": "c",
+        "dict.h": "c",
+        "specific.h": "c"
     }
 }

@@ -27,7 +27,6 @@ int main(int argc, char* argv[])
          assert(dict_add(x, str));
       }
    }while(!done);
-   // print(x);
    fclose(fp);
 
    fp = nfopen(argv[2], "rt");
@@ -46,7 +45,7 @@ int main(int argc, char* argv[])
    }while(!done);
    fclose(fp);
    printf("count: %d\n", count);
-   print(x);
+   // print(x);
    dict_free(x);
    return EXIT_SUCCESS;
 }

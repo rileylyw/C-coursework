@@ -1,5 +1,7 @@
 #include "../dict.h"
 
+#define SCALE 2
+
 typedef struct node{
     char* word;
     struct node* next;
