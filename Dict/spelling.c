@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
    }while(!done);
    fclose(fp);
    printf("count: %d\n", count);
-   // print(x);
+   print(x);
    dict_free(x);
    return EXIT_SUCCESS;
 }
