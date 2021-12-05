@@ -43,6 +43,7 @@ bool dict_add(dict* x,  const char* s){
         }
         return true;
     }
+    return false;
 }
 
 node* allocateData(const char *s){

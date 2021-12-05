@@ -8,7 +8,7 @@ void test(void){
 }
 
 unsigned long* _hashes(unsigned int sz, const char* s){
-    unsigned long* hashes = ncalloc(KHASHES, sizeof(unsigned long));
+    unsigned long* hashes = (unsigned long*)ncalloc(KHASHES, sizeof(unsigned long));
     unsigned long bh = _hash(s);
     int len = strlen(s);
     srand(bh * (len*s[0] + s[len-1]));
