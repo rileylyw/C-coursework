@@ -24,7 +24,7 @@ int main(void)
    assert(dict_spelling(d, "two"));
    assert(!dict_spelling(d, "Two"));
    assert(!dict_spelling(d, "One"));
-
+   print(d);
    dict_free(d);
    return EXIT_SUCCESS;
 }

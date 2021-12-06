@@ -35,7 +35,8 @@ bool dict_add(dict* x,  const char* s){
     }
     else{
         node* temp = x->hash[hashValue];
-        if(temp->word != s){ //if repeated dont store
+        if(strcmp(temp->word, s)){ //if repeated dont store
+        // if(temp->word != s){ //if repeated dont store
             while(temp->next){
                 temp = temp->next;
             }
@@ -85,15 +86,15 @@ void dict_free(dict* x){
 }
 
 
-// void print(dict* x){
-//     int i;
-//     for(i = 0; i < x->size; i++){
-//         node* temp = x->hash[i];
-//         printf("x->hash[%d]-->", i);
-//         while(temp)        {
-//             printf("%s -->",temp->word);
-//             temp = temp->next;
-//         }
-//         printf("NULL\n");
-//     }
-// }
+void print(dict* x){
+    int i;
+    for(i = 0; i < x->size; i++){
+        node* temp = x->hash[i];
+        printf("x->hash[%d]-->", i);
+        while(temp)        {
+            printf("%s -->",temp->word);
+            temp = temp->next;
+        }
+        printf("NULL\n");
+    }
+}
