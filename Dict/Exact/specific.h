@@ -14,3 +14,4 @@ struct dict{
 
 int hash(unsigned int sz, const char *s);
 node* allocateData(const char *s);
+void test(void);
