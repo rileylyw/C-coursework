@@ -69,15 +69,16 @@ void dict_free(dict* x){
 }
 
 void test(void){
-    int x=_hash("one");
-    unsigned long* hashfunc=_hashes(1000, "one");
-    for(int i=0; i< KHASHES; i++){
-        printf("i: %ld, %d\n", hashfunc[i], i);
-        // printf("1: %d\n", hashfunc[1]);
-        // printf("2: %d\n", hashfunc[2]);
+    int x = _hash("hello");
+    int y = _hash("testing");
+    assert(x != y);
+    unsigned long* hv1=_hashes(50, "sornari");
+    for(int i=0; i< KHASHES; i++){ //test hash values within hash table size range
+        assert(hv1[i]>0);
+        assert(hv1[i]<50);
+        // printf("%d, %lu\n", i, hv[i]);
     }
-
-
+    free(hv1);
     /* init dict */
     dict* d = (dict*) ncalloc(1, sizeof(dict));
     d->size = 50 * SCALE; //20times the size
@@ -86,9 +87,33 @@ void test(void){
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "letterers"));
+    unsigned long* hv2=_hashes(50*20, "letterers");
+    for(int i=0; i<KHASHES; i++){ //test if respective bits are set to true
+        assert(d->bitarray[hv2[i]] == true);
+        assert(d->bitarray[777] == false);
+        assert(d->bitarray[123] == false);
+        // assert(d->bitarray[1000] == 0);
+        // assert(d->bitarray[10000] == NULL);
+        // printf("boolarray %s\n", d->bitarray[hv2[i]]?"true":"false");
+    }
+    // printf("1000 %lu\n", hv2[1000]);
+    // for(int i=0; i<d->size+20; i++){
+    //     printf("%d, %s\n", i, d->bitarray[i]?"true":"false");
+    // }
+    free(hv2);
     assert(dict_add(d, "letterers"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "hello"));
+    assert(dict_add(d, "-!?"));
+    assert(!dict_spelling(NULL, "sornari"));
+    assert(dict_spelling(d, "sornari"));
+    assert(dict_spelling(d, "letterers"));
+    assert(dict_spelling(d, "interconnect"));
+    assert(dict_spelling(d, "hello"));
+    assert(dict_spelling(d, "-!?"));
+    assert(!dict_spelling(d, "sornarii"));
+    assert(!dict_spelling(d, "123"));
+    dict_free(d);
     return;
 }

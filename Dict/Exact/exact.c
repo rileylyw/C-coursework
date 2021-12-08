@@ -81,8 +81,10 @@ void test(void){
     assert(hash(10, "hello") == 3);
     assert(hash(1000, "testing") == 19);
     assert(hash(1000, "testing") < 1000);
+    assert(hash(1000, "testing") > 0);
     assert(hash(50, "oneoneone") == 13);
     assert(hash(50, "oneoneone") < 50);
+    assert(hash(50, "oneoneone") > 0);
     /* init dict */
     dict* d = (dict*) ncalloc(1, sizeof(dict));
     d->size = 50 * SCALE;
@@ -95,6 +97,7 @@ void test(void){
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "hello"));
+    assert(dict_add(d, "-!?"));
     /* sornari, letterers, interconnect share the same hash value */
     int hv1 = hash(d->size, "sornari");
     int hv2 = hash(d->size, "letterers");
@@ -108,6 +111,7 @@ void test(void){
     assert(dict_spelling(d, "letterers"));
     assert(dict_spelling(d, "interconnect"));
     assert(dict_spelling(d, "hello"));
+    assert(dict_spelling(d, "-!?"));
     assert(!dict_spelling(d, "sornarii"));
     assert(!dict_spelling(d, "123"));
     node* test = allocateData("123");
