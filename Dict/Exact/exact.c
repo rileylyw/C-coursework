@@ -55,7 +55,7 @@ bool dict_spelling(dict* x, const char* s){
     int hashValue = hash(x->size, s);
     node* temp = x->hash[hashValue];
     while(temp){
-        if(strcmp(temp->word, s)==0){
+        if(strcmp(temp->word, s) == 0){
             return true;
         }
         temp = temp->next;
@@ -77,20 +77,6 @@ void dict_free(dict* x){
     free(x);
 }
 
-
-// void print(dict* x){
-//     int i;
-//     for(i = 0; i < x->size; i++){
-//         node* temp = x->hash[i];
-//         printf("x->hash[%d]-->", i);
-//         while(temp)        {
-//             printf("%s -->",temp->word);
-//             temp = temp->next;
-//         }
-//         printf("NULL\n");
-//     }
-// }
-
 void test(void){
     assert(hash(10, "hello") == 3);
     assert(hash(1000, "testing") == 19);
@@ -109,7 +95,7 @@ void test(void){
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "hello"));
-    //sornari, letterers, interconnect share the same hash value
+    /* sornari, letterers, interconnect share the same hash value */
     int hv1 = hash(d->size, "sornari");
     int hv2 = hash(d->size, "letterers");
     int hv3 = hash(d->size, "interconnect");
@@ -123,6 +109,7 @@ void test(void){
     assert(dict_spelling(d, "interconnect"));
     assert(dict_spelling(d, "hello"));
     assert(!dict_spelling(d, "sornarii"));
+    assert(!dict_spelling(d, "123"));
     node* test = allocateData("123");
     assert(strcmp(test->word, "123") == 0);
     assert(strcmp(test->word, "abc") != 0);

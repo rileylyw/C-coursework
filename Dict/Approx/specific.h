@@ -10,3 +10,4 @@ struct dict{
 
 unsigned long* _hashes(unsigned int sz, const char* s);
 int _hash(const char *s);
+void test(void);
