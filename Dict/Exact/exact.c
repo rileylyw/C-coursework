@@ -27,8 +27,8 @@ bool dict_add(dict* x,  const char* s){
         return true;
     }
     else{
-        node* temp = x->hash[hashValue]; //TODO: repeated chain
-        if(strcmp(temp->word, s)){ //if repeated dont store
+        node* temp = x->hash[hashValue];
+        if(!dict_spelling(x, s)){ //if repeated dont store
             while(temp->next){
                 temp = temp->next;
             }
@@ -78,22 +78,20 @@ void dict_free(dict* x){
 }
 
 
-void print(dict* x){
-    int i;
-    for(i = 0; i < x->size; i++){
-        node* temp = x->hash[i];
-        printf("x->hash[%d]-->", i);
-        while(temp)        {
-            printf("%s -->",temp->word);
-            temp = temp->next;
-        }
-        printf("NULL\n");
-    }
-}
+// void print(dict* x){
+//     int i;
+//     for(i = 0; i < x->size; i++){
+//         node* temp = x->hash[i];
+//         printf("x->hash[%d]-->", i);
+//         while(temp)        {
+//             printf("%s -->",temp->word);
+//             temp = temp->next;
+//         }
+//         printf("NULL\n");
+//     }
+// }
 
 void test(void){
-    // int x=hash(100, "sdgd");
-    // printf("x: %d\n", x);
     assert(hash(10, "hello") == 3);
     assert(hash(1000, "testing") == 19);
     assert(hash(1000, "testing") < 1000);
@@ -103,27 +101,34 @@ void test(void){
     dict* d = (dict*) ncalloc(1, sizeof(dict));
     d->size = 50 * SCALE;
     d->hash = (node**) ncalloc(d->size, sizeof(node*));
-    assert(!dict_add(NULL, "cainitic"));
-    assert(dict_add(d, "cainitic"));
-    assert(dict_add(d, "cainitic"));
-    assert(dict_add(d, "bournes"));
-    assert(dict_add(d, "bournes"));
-    print(d);
-    int hv1 = hash(d->size, "cainitic");
-    int hv2 = hash(d->size, "bournes"); //cainitic & bournes share the same hash value
-    assert(strcmp(d->hash[hv1]->word, "cainitic") == 0); //first node
-    assert(strcmp(d->hash[hv2]->next->word, "bournes") == 0); //second node
-    assert(d->hash[hv1]->next->next == NULL); //if word repeated, didnt add to dict
+    assert(!dict_add(NULL, "sornari"));
+    assert(dict_add(d, "sornari"));
+    assert(dict_add(d, "sornari"));
+    assert(dict_add(d, "letterers"));
+    assert(dict_add(d, "letterers"));
+    assert(dict_add(d, "interconnect"));
+    assert(dict_add(d, "interconnect"));
+    assert(dict_add(d, "hello"));
+    //sornari, letterers, interconnect share the same hash value
+    int hv1 = hash(d->size, "sornari");
+    int hv2 = hash(d->size, "letterers");
+    int hv3 = hash(d->size, "interconnect");
+    assert(strcmp(d->hash[hv1]->word, "sornari") == 0); //first node
+    assert(strcmp(d->hash[hv2]->next->word, "letterers") == 0); //second node
+    assert(strcmp(d->hash[hv3]->next->next->word, "interconnect") == 0); //third node
+    assert(d->hash[hv1]->next->next->next == NULL); //if word repeated, didnt add to dict
+    assert(!dict_spelling(NULL, "sornari"));
+    assert(dict_spelling(d, "sornari"));
+    assert(dict_spelling(d, "letterers"));
+    assert(dict_spelling(d, "interconnect"));
+    assert(dict_spelling(d, "hello"));
+    assert(!dict_spelling(d, "sornarii"));
     node* test = allocateData("123");
     assert(strcmp(test->word, "123") == 0);
     assert(strcmp(test->word, "abc") != 0);
     assert(test->next == NULL);
     free(test->word);
     free(test);
-
-
-
-    // print(d);
     dict_free(d);
     return;
 }
