@@ -90,7 +90,7 @@ void test(void){
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "letterers"));
     assert(dict_add(d, "letterers"));
-    unsigned long* hv2=_hashes(50*20, "letterers");
+    unsigned long* hv2=_hashes(50*SCALE, "letterers");
     for(int i=0; i<KHASHES; i++){ //test if respective bits are set to true
         assert(d->bitarray[hv2[i]] == true);
         assert(d->bitarray[0] == false);
@@ -104,7 +104,7 @@ void test(void){
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "hello"));
     assert(dict_add(d, "-!?"));
-    unsigned long* hv3=_hashes(50*20, "-!?");
+    unsigned long* hv3=_hashes(50*SCALE, "-!?");
     for(int i=0; i<KHASHES; i++){ //test if respective bits are set to true
         assert(d->bitarray[hv3[i]] == true);
         assert(d->bitarray[25] == false);
