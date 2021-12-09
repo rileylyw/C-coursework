@@ -92,7 +92,7 @@ void test(void){
         assert(d->bitarray[hv2[i]] == true);
         assert(d->bitarray[777] == false);
         assert(d->bitarray[123] == false);
-        // assert(d->bitarray[1000] == 0);
+        assert(d->bitarray[999] == false);
         // assert(d->bitarray[10000] == NULL);
         // printf("boolarray %s\n", d->bitarray[hv2[i]]?"true":"false");
     }
