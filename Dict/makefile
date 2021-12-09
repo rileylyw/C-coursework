@@ -2,7 +2,7 @@
 CC := clang
 
 # The house-style flags
-CWARNS := -Wall -Wextra -Wpedantic -Wfloat-equal -Wvla -std=c99 #-Werror
+CWARNS := -Wall -Wextra -Wpedantic -Wfloat-equal -Wvla -std=c99 -Werror
 
 # Optimized version
 PRODUCTION := $(CWARNS) -O2

@@ -18,7 +18,7 @@ dict* dict_init(unsigned int maxwords){
 }
 
 bool dict_add(dict* x,  const char* s){
-    if(x == NULL || strlen(s) == 0 || s == NULL){
+    if(x == NULL || s == NULL || strlen(s) == 0){
         return false;
     }
     int hashValue = hash(x->size, s);
@@ -49,7 +49,7 @@ node* allocateData(const char *s){
 }
 
 bool dict_spelling(dict* x, const char* s){
-    if(x == NULL || strlen(s) == 0 || s == NULL){
+    if(x == NULL || s == NULL || strlen(s) == 0){
         return false;
     }
     int hashValue = hash(x->size, s);

@@ -28,10 +28,9 @@ int main(int argc, char* argv[])
       }
    }while(!done);
    fclose(fp);
-
+   int count = 0;
    fp = nfopen(argv[2], "rt");
    done = false;
-   int count = 0;
    do{
       if(fscanf(fp, "%s", str) != 1){
          done = true;
@@ -43,9 +42,9 @@ int main(int argc, char* argv[])
          assert(dict_add(x, str));
       }
    }while(!done);
-   fclose(fp);
    printf("count: %d\n", count);
-   // print(x);
+   fclose(fp);
+
    dict_free(x);
    return EXIT_SUCCESS;
 }

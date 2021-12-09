@@ -31,7 +31,7 @@ dict* dict_init(unsigned int maxwords){
 }
 
 bool dict_add(dict* x,  const char* s){
-    if(x == NULL || strlen(s) == 0 || s == NULL){
+    if(x == NULL || s == NULL || strlen(s) == 0){
         return false;
     }
     if(!dict_spelling(x, s)){
@@ -49,7 +49,7 @@ bool dict_add(dict* x,  const char* s){
 }
 
 bool dict_spelling(dict* x, const char* s){
-    if(x == NULL || strlen(s) == 0 || s == NULL){
+    if(x == NULL || s == NULL || strlen(s) == 0){
         return false;
     }
     unsigned long* hashes = _hashes(x->size, s);
