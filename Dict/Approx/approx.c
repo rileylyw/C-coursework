@@ -76,36 +76,40 @@ void test(void){
     for(int i=0; i< KHASHES; i++){ //test hash values within hash table size range
         assert(hv1[i]>0);
         assert(hv1[i]<50);
-        // printf("%d, %lu\n", i, hv[i]);
     }
     free(hv1);
     /* init dict */
     dict* d = (dict*) ncalloc(1, sizeof(dict));
-    d->size = 50 * SCALE; //20times the size
+    d->size = 50 * SCALE;
     d->bitarray = (bool*) ncalloc(d->size, sizeof(bool));
     assert(!dict_add(NULL, "sornari"));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "letterers"));
+    assert(dict_add(d, "letterers"));
     unsigned long* hv2=_hashes(50*20, "letterers");
     for(int i=0; i<KHASHES; i++){ //test if respective bits are set to true
         assert(d->bitarray[hv2[i]] == true);
+        assert(d->bitarray[0] == false);
         assert(d->bitarray[777] == false);
         assert(d->bitarray[123] == false);
         assert(d->bitarray[999] == false);
-        // assert(d->bitarray[10000] == NULL);
         // printf("boolarray %s\n", d->bitarray[hv2[i]]?"true":"false");
     }
-    // printf("1000 %lu\n", hv2[1000]);
-    // for(int i=0; i<d->size+20; i++){
-    //     printf("%d, %s\n", i, d->bitarray[i]?"true":"false");
-    // }
     free(hv2);
-    assert(dict_add(d, "letterers"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "hello"));
     assert(dict_add(d, "-!?"));
+    unsigned long* hv3=_hashes(50*20, "-!?");
+    for(int i=0; i<KHASHES; i++){ //test if respective bits are set to true
+        assert(d->bitarray[hv3[i]] == true);
+        assert(d->bitarray[25] == false);
+        assert(d->bitarray[123] == false);
+        assert(d->bitarray[456] == false);
+        assert(d->bitarray[999] == false);
+    }
+    free(hv3);
     assert(!dict_spelling(NULL, "sornari"));
     assert(dict_spelling(d, "sornari"));
     assert(dict_spelling(d, "letterers"));
