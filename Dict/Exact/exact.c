@@ -18,7 +18,7 @@ dict* dict_init(unsigned int maxwords){
 }
 
 bool dict_add(dict* x,  const char* s){
-    if(x == NULL){
+    if(x == NULL || strlen(s) == 0 || s == NULL){
         return false;
     }
     int hashValue = hash(x->size, s);
@@ -49,7 +49,7 @@ node* allocateData(const char *s){
 }
 
 bool dict_spelling(dict* x, const char* s){
-    if(x == NULL){
+    if(x == NULL || strlen(s) == 0 || s == NULL){
         return false;
     }
     int hashValue = hash(x->size, s);
@@ -90,6 +90,9 @@ void test(void){
     d->size = 50 * SCALE;
     d->hash = (node**) ncalloc(d->size, sizeof(node*));
     assert(!dict_add(NULL, "sornari"));
+    assert(!dict_add(d, ""));
+    assert(!dict_add(d, NULL));
+    assert(!dict_add(NULL, NULL));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "letterers"));
@@ -107,6 +110,9 @@ void test(void){
     assert(strcmp(d->hash[hv3]->next->next->word, "interconnect") == 0); //third node
     assert(d->hash[hv1]->next->next->next == NULL); //if word repeated, didnt add to dict
     assert(!dict_spelling(NULL, "sornari"));
+    assert(!dict_spelling(d, ""));
+    assert(!dict_spelling(d, NULL));
+    assert(!dict_spelling(NULL, NULL));
     assert(dict_spelling(d, "sornari"));
     assert(dict_spelling(d, "letterers"));
     assert(dict_spelling(d, "interconnect"));

@@ -31,7 +31,7 @@ dict* dict_init(unsigned int maxwords){
 }
 
 bool dict_add(dict* x,  const char* s){
-    if(x == NULL){
+    if(x == NULL || strlen(s) == 0 || s == NULL){
         return false;
     }
     if(!dict_spelling(x, s)){
@@ -49,7 +49,7 @@ bool dict_add(dict* x,  const char* s){
 }
 
 bool dict_spelling(dict* x, const char* s){
-    if(x == NULL){
+    if(x == NULL || strlen(s) == 0 || s == NULL){
         return false;
     }
     unsigned long* hashes = _hashes(x->size, s);
@@ -83,6 +83,9 @@ void test(void){
     d->size = 50 * SCALE;
     d->bitarray = (bool*) ncalloc(d->size, sizeof(bool));
     assert(!dict_add(NULL, "sornari"));
+    assert(!dict_add(d, ""));
+    assert(!dict_add(d, NULL));
+    assert(!dict_add(NULL, NULL));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "sornari"));
     assert(dict_add(d, "letterers"));
@@ -111,6 +114,9 @@ void test(void){
     }
     free(hv3);
     assert(!dict_spelling(NULL, "sornari"));
+    assert(!dict_spelling(d, ""));
+    assert(!dict_spelling(d, NULL));
+    assert(!dict_spelling(NULL, NULL));
     assert(dict_spelling(d, "sornari"));
     assert(dict_spelling(d, "letterers"));
     assert(dict_spelling(d, "interconnect"));
