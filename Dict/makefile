@@ -1,5 +1,5 @@
 # Which compiler to use e.g. gcc, clang, gcc-8 etc.
-CC := clang
+CC := gcc
 
 # The house-style flags
 CWARNS := -Wall -Wextra -Wpedantic -Wfloat-equal -Wvla -std=c99 -Werror
