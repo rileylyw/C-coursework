@@ -85,6 +85,9 @@ void test(void){
     assert(hash(50, "oneoneone") == 13);
     assert(hash(50, "oneoneone") < 50);
     assert(hash(50, "oneoneone") > 0);
+    // make sure hash function always return the same values
+    assert(hash(50, "oneoneone") == hash(50, "oneoneone"));
+    assert(hash(9999999, "!!!???") == hash(9999999, "!!!???"));
     /* init dict */
     dict* d = (dict*) ncalloc(1, sizeof(dict));
     d->size = 50 * SCALE;
@@ -100,15 +103,16 @@ void test(void){
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "interconnect"));
     assert(dict_add(d, "hello"));
+    assert(dict_add(d, "1234567890"));
     assert(dict_add(d, "-!?"));
-    /* sornari, letterers, interconnect share the same hash value */
+    // sornari, letterers, interconnect share the same hash value
     int hv1 = hash(d->size, "sornari");
     int hv2 = hash(d->size, "letterers");
     int hv3 = hash(d->size, "interconnect");
-    assert(strcmp(d->hash[hv1]->word, "sornari") == 0); //first node
-    assert(strcmp(d->hash[hv2]->next->word, "letterers") == 0); //second node
-    assert(strcmp(d->hash[hv3]->next->next->word, "interconnect") == 0); //third node
-    assert(d->hash[hv1]->next->next->next == NULL); //if word repeated, didnt add to dict
+    assert(strcmp(d->hash[hv1]->word, "sornari") == 0); // first node
+    assert(strcmp(d->hash[hv2]->next->word, "letterers") == 0); // second node
+    assert(strcmp(d->hash[hv3]->next->next->word, "interconnect") == 0); // third node
+    assert(d->hash[hv1]->next->next->next == NULL); // if word repeated, didnt add to dict
     assert(!dict_spelling(NULL, "sornari"));
     assert(!dict_spelling(d, ""));
     assert(!dict_spelling(d, NULL));
