@@ -1,5 +1,5 @@
 #include "stack.h"
-#include "specific_realloc.h"
+#include "specific.h"
 
 int main(void)
 {

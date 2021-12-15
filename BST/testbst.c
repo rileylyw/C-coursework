@@ -1,5 +1,4 @@
-#include "specific_realloc.h"
-// #include "specific_linked.h"
+#include "specific.h"
 #include "bst.h"
 
 #define ARRSIZE 15

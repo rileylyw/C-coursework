@@ -1,7 +1,0 @@
-digraph structs
-{
- rankdir = LR;
- node [shape=record];
- stack [label="20|150|30|5|10"];
-}
-

@@ -8,27 +8,27 @@ LDLIBS=
 
 all: testfixed testfixed_s testfixed_v testlinked testlinked_s testlinked_v pdfs simslow
 
-testfixed: queue.h specific_fixed.h fixed.c testqueue.c ../General/general.h ../General/general.c
-	$(CC) testqueue.c fixed.c ../General/general.c -o testfixed -I./Fixed $(PRODUCTION) $(LDLIBS)
+testfixed: queue.h Fixed/specific.h Fixed/fixed.c testqueue.c ../General/general.h ../General/general.c
+	$(CC) testqueue.c Fixed/fixed.c ../General/general.c -o testfixed -I./Fixed $(PRODUCTION) $(LDLIBS)
 
-testlinked: queue.h specific_linked.h linked.c testqueue.c ../General/general.h ../General/general.c
-	$(CC) testqueue.c linked.c ../General/general.c -o testlinked -I./Linked $(PRODUCTION) $(LDLIBS)
+testlinked: queue.h Linked/specific.h Linked/linked.c testqueue.c ../General/general.h ../General/general.c
+	$(CC) testqueue.c Linked/linked.c ../General/general.c -o testlinked -I./Linked $(PRODUCTION) $(LDLIBS)
 
-testfixed_s: queue.h specific_fixed.h fixed.c testqueue.c ../General/general.h ../General/general.c
-	$(CC) testqueue.c fixed.c ../General/general.c -o testfixed_s -I./Fixed $(SANITIZE) $(LDLIBS)
+testfixed_s: queue.h Fixed/specific.h Fixed/fixed.c testqueue.c ../General/general.h ../General/general.c
+	$(CC) testqueue.c Fixed/fixed.c ../General/general.c -o testfixed_s -I./Fixed $(SANITIZE) $(LDLIBS)
 
-testlinked_s: queue.h specific_linked.h linked.c testqueue.c ../General/general.h ../General/general.c
-	$(CC) testqueue.c linked.c ../General/general.c -o testlinked_s -I./Linked $(SANITIZE) $(LDLIBS)
+testlinked_s: queue.h Linked/specific.h Linked/linked.c testqueue.c ../General/general.h ../General/general.c
+	$(CC) testqueue.c Linked/linked.c ../General/general.c -o testlinked_s -I./Linked $(SANITIZE) $(LDLIBS)
 
-testfixed_v: queue.h specific_fixed.h fixed.c testqueue.c ../General/general.h ../General/general.c
-	$(CC) testqueue.c fixed.c ../General/general.c -o testfixed_v -I./Fixed $(VALGRIND) $(LDLIBS)
+testfixed_v: queue.h Fixed/specific.h Fixed/fixed.c testqueue.c ../General/general.h ../General/general.c
+	$(CC) testqueue.c Fixed/fixed.c ../General/general.c -o testfixed_v -I./Fixed $(VALGRIND) $(LDLIBS)
 
-testlinked_v: queue.h specific_linked.h linked.c testqueue.c ../General/general.h ../General/general.c
-	$(CC) testqueue.c linked.c ../General/general.c -o testlinked_v -I./Linked $(VALGRIND) $(LDLIBS)
+testlinked_v: queue.h Linked/specific.h Linked/linked.c testqueue.c ../General/general.h ../General/general.c
+	$(CC) testqueue.c Linked/linked.c ../General/general.c -o testlinked_v -I./Linked $(VALGRIND) $(LDLIBS)
 
 
-simslow: queue.h specific_fixed.h fixed.c simslow.c ../General/general.h ../General/general.c
-	$(CC) simslow.c fixed.c ../General/general.c -o simslow -I./Fixed $(SANITIZE) $(LDLIBS)
+simslow: queue.h Fixed/specific.h Fixed/fixed.c simslow.c ../General/general.h ../General/general.c
+	$(CC) simslow.c Fixed/fixed.c ../General/general.c -o simslow -I./Fixed $(SANITIZE) $(LDLIBS)
 
 
 

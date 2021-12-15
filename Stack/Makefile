@@ -8,23 +8,23 @@ LDLIBS =
 
 all: testrealloc_s testrealloc_v testrealloc testlinked testlinked_s testlinked_v revstr_realloc revstr_linked pdfs buildpostfix
 
-testrealloc : stack.h specific_realloc.h realloc.c teststack.c ../General/general.h ../General/general.c
-	$(CC) teststack.c realloc.c ../General/general.c -o testrealloc -I./Realloc $(PRODUCTION) $(LDLIBS)
+testrealloc : stack.h Realloc/specific.h Realloc/realloc.c teststack.c ../General/general.h ../General/general.c
+	$(CC) teststack.c Realloc/realloc.c ../General/general.c -o testrealloc -I./Realloc $(PRODUCTION) $(LDLIBS)
 
-testlinked: stack.h specific_linked.h linked.c teststack.c ../General/general.h ../General/general.c
-	$(CC) teststack.c linked.c ../General/general.c -o testlinked -I./Linked $(PRODUCTION) $(LDLIBS)
+testlinked: stack.h Linked/specific.h Linked/linked.c teststack.c ../General/general.h ../General/general.c
+	$(CC) teststack.c Linked/linked.c ../General/general.c -o testlinked -I./Linked $(PRODUCTION) $(LDLIBS)
 
-testrealloc_s : stack.h specific_realloc.h realloc.c teststack.c ../General/general.h ../General/general.c
-	$(CC) teststack.c realloc.c ../General/general.c -o testrealloc_s -I./Realloc $(SANITIZE) $(LDLIBS)
+testrealloc_s : stack.h Realloc/specific.h Realloc/realloc.c teststack.c ../General/general.h ../General/general.c
+	$(CC) teststack.c Realloc/realloc.c ../General/general.c -o testrealloc_s -I./Realloc $(SANITIZE) $(LDLIBS)
 
-testlinked_s: stack.h specific_linked.h linked.c teststack.c ../General/general.h ../General/general.c
-	$(CC) teststack.c linked.c ../General/general.c -o testlinked_s -I./Linked $(SANITIZE) $(LDLIBS)
+testlinked_s: stack.h Linked/specific.h Linked/linked.c teststack.c ../General/general.h ../General/general.c
+	$(CC) teststack.c Linked/linked.c ../General/general.c -o testlinked_s -I./Linked $(SANITIZE) $(LDLIBS)
 
-testrealloc_v : stack.h specific_realloc.h realloc.c teststack.c ../General/general.h ../General/general.c
-	$(CC) teststack.c realloc.c ../General/general.c -o testrealloc_v -I./Realloc $(VALGRIND) $(LDLIBS)
+testrealloc_v : stack.h Realloc/specific.h Realloc/realloc.c teststack.c ../General/general.h ../General/general.c
+	$(CC) teststack.c Realloc/realloc.c ../General/general.c -o testrealloc_v -I./Realloc $(VALGRIND) $(LDLIBS)
 
-testlinked_v: stack.h specific_linked.h linked.c teststack.c ../General/general.h ../General/general.c
-	$(CC) teststack.c linked.c ../General/general.c -o testlinked_v -I./Linked $(VALGRIND) $(LDLIBS)
+testlinked_v: stack.h Linked/specific.h Linked/linked.c teststack.c ../General/general.h ../General/general.c
+	$(CC) teststack.c Linked/linked.c ../General/general.c -o testlinked_v -I./Linked $(VALGRIND) $(LDLIBS)
 
 
 

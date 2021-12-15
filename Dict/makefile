@@ -27,7 +27,7 @@ all : allexact allapprox
 
 
 testexact: Exact/exact.c testdict.c general.c
-	$(CC) testdict.c Exact/exact.c general.c $(PRODUCTION) -o testexact -lm
+	$(CC) testdict.c Exact/exact.c general.c $(PROFILE) -o testexact -lm
 testexact_s: Exact/exact.c testdict.c general.c
 	$(CC) testdict.c Exact/exact.c general.c $(SANITIZE) -o testexact_s -lm
 spellexact: Exact/exact.c spelling.c general.c

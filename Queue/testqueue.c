@@ -1,6 +1,5 @@
 #include "queue.h"
-#include "specific_linked.h"
-// #include "specific_fixed.h"
+#include "specific.h"
 
 #ifndef BOUNDED
    #define LOOPTEST 10000
