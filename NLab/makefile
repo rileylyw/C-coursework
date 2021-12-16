@@ -1,7 +1,7 @@
 CC := clang
 CWARNS := -Wall -Wpedantic -Wextra -Wfloat-equal -Wvla
 CFLAGNOABORT := $(CWARNS) -std=c99 -O3
-CFLAGS := $(CFLAGNOABORT) -Werror
+CFLAGS := $(CFLAGNOABORT) #-Werror
 LDLIBS := -lm
 SANI := -fsanitize=undefined -fsanitize=address
 NLBS := $(wildcard *.nlb)
