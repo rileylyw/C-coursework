@@ -19,7 +19,6 @@
 // #endif
 
 struct var{
-//    char var[CHARACTERS]; //A-Z
    char num[BIGNUM][BIGNUM];
    int height;
    int width;
@@ -27,7 +26,7 @@ struct var{
 typedef struct var var;
 
 struct prog{
-   char wds[MAXNUMTOKENS][MAXTOKENSIZE];
+   char wds[MAXNUMTOKENS][MAXTOKENSIZE]; //instructions
    int cw; // Current Word
    var* variable;
 };
@@ -36,6 +35,7 @@ typedef struct prog Program;
 void Prog(Program *p);
 void Instrclist(Program *p);
 void test(void);
+void Instrclist(Program *p);
 // void Code(Program *p);
 // void Statement(Program *p);
 
