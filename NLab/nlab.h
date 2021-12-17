@@ -36,6 +36,8 @@ void Prog(Program *p);
 void Instrclist(Program *p);
 void test(void);
 void Instrclist(Program *p);
+void verbose(char file[BIGNUM], int argc, char* argv[]);
+void readFile(char file[], Program* p);
 // void Code(Program *p);
 // void Statement(Program *p);
 

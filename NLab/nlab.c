@@ -1,10 +1,10 @@
 #include "nlab.h"
 
-int main(void){
+int main(int argc, char* argv[]){
    Program* prog = ncalloc(1, sizeof(Program));
 
    char file[BIGNUM];
-   // verbose(file, argc, argv);
+   verbose(file, argc, argv);
    char wds[MAXNUMTOKENS][MAXTOKENSIZE];
    readFile(file, prog);
 
@@ -31,18 +31,14 @@ void readFile(char file[], Program* p){
    fclose(fp);
 }
 
-// void verbose(char file[BIGNUM], int argc, char* argv[]){
-//    if(argc==3){
-//       strcpy(file, argv[2]);
-//       if(strcmp(argv[1], "-v")!=0){
-//          fprintf(stderr, "Invalid Inputs\n");
-//          exit(EXIT_FAILURE);
-//       }
-//    }
-//    else if(argc==2){
-//       strcpy(file, argv[1]);
-//    }
-// }
+void verbose(char file[BIGNUM], int argc, char* argv[]){
+   if(argc==2){
+      strcpy(file, argv[1]);
+   }
+   else if(argc==1){
+      ERROR("No file");
+   }
+}
 
 void Prog(Program *p){
    if(!strsame(p->wds[p->cw], "BEGIN")){
