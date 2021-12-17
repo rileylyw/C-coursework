@@ -1,4 +1,4 @@
-<PROG> ::= BEGIN "{" <INSTRCLIST>
+<PROG> ::= "BEGIN" "{" <INSTRCLIST>
 
 <INSTRCLIST> ::= "}" | <INSTRC> <INSTRCLIST>
 <INSTRC> ::= <PRINT> | <SET> | <CREATE> | <LOOP>
@@ -7,20 +7,20 @@
 <PRINT> ::= "PRINT" <VARNAME> | "PRINT" <STRING>
 
 # One of the 26 possible (upper-case) variables
-<VARNAME> ::= $[A-Z]     % e.g. $A, $B, $Z etc.
+<VARNAME> ::= "$"[A-Z]     # e.g. $A, $B, $Z etc.
 
 # Because of the assumption that a program is just a list of words,
 strings can't have spaces in them (for simplicity)
 <STRING> :: Double-quoted string e.g. "../../doof.arr", "Hello!" etc.
 
-<SET> ::= <VARNAME> ":=" <POLISHLIST>
+<SET> ::= "SET" <VARNAME> ":=" <POLISHLIST>
 <POLISHLIST> ::= <POLISH><POLISHLIST>  | ";"
 
 <POLISH> ::= <PUSHDOWN> | <UNARYOP> | <BINARYOP>
 <PUSHDOWN> ::== <VARNAME> | <INTEGER>
 
 # A non-negative integer
-<INTEGER> ::= [0-9]+    % e.g. 1, 250,  3
+<INTEGER> ::= [0-9]+    # e.g. 1, 250,  3
 
 # Pop one array, push the result.
 # U-NOT : Flip the Boolean values of an array
@@ -36,8 +36,8 @@ strings can't have spaces in them (for simplicity)
 
 # Create an array full of ones, or read from a file
 <CREATE> ::= "ONES" <ROWS> <COLS> <VARNAME> | "READ" <FILENAME> <VARNAME>
-<ROW> ::= <INTEGER>
-<COL> ::= <INTEGER>
+<ROWS> ::= <INTEGER>
+<COLS> ::= <INTEGER>
 <FILENAME> ::= <STRING>
 
 # Loop using a variable to count from 1 (!) to <= <INTEGER>

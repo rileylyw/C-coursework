@@ -2,15 +2,10 @@
 
 int main(int argc, char* argv[]){
    Program* prog = ncalloc(1, sizeof(Program));
-
    char file[BIGNUM];
    verbose(file, argc, argv);
-   char wds[MAXNUMTOKENS][MAXTOKENSIZE];
    readFile(file, prog);
 
-   int i=0;
-   while(scanf("%s", prog->wds[i++])==1 && i<MAXNUMTOKENS);
-   assert(i<MAXNUMTOKENS);
    Prog(prog);
    printf("Parsed OK\n");
    free(prog);
@@ -20,8 +15,7 @@ int main(int argc, char* argv[]){
 void readFile(char file[], Program* p){
    FILE* fp=fopen(file, "r");
    if(fp==NULL){
-      fprintf(stderr, "Cannot open file %s\n", file);
-      exit(EXIT_FAILURE);
+      ERROR("Cannot open file");
    }
    char buffer[BIGNUM];
    int i=0;
@@ -48,17 +42,17 @@ void Prog(Program *p){
    if(!strsame(p->wds[p->cw], "{")){
       ERROR("Missing {");
    }
-   Instrclist(p);
+   // Instrclist(p);
 }
 
-void Instrclist(Program *p){
-   if(strsame(p->wds[p->cw], "}")){
-      return;
-   }
-   Instrc(p);
-   p->cw = p->cw + 1;
-   Instrclist(p);
-}
+// void Instrclist(Program *p){
+//    if(strsame(p->wds[p->cw], "}")){
+//       return;
+//    }
+//    // Instrc(p);
+//    p->cw = p->cw + 1;
+//    Instrclist(p);
+// }
 
 // void Code(Program *p)
 // {
