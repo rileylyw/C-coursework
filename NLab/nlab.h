@@ -1,22 +1,26 @@
+#pragma once
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 
-#include "general.c"
+#include "general.h"
 
 #define BIGNUM 1000
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
 #define strsame(A,B) (strcmp(A, B)==0)
-#define ERROR(PHRASE) { fprintf(stderr, \
-          "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
-          __FILE__, __LINE__); \
-          exit(EXIT_FAILURE); }
-#define CHARACTERS 26
-// #define DINTERP
-// #ifdef DINTERP
-// #endif
+#ifdef TEST
+   #define ERROR(PHRASE) { return false; }
+#else
+   #define ERROR(PHRASE) { fprintf(stderr, \
+            "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
+            __FILE__, __LINE__); \
+            exit(EXIT_FAILURE); }
+#endif
+
+// #define CHARACTERS 26
 
 struct var{
    char num[BIGNUM][BIGNUM];
@@ -32,17 +36,8 @@ struct prog{
 };
 typedef struct prog Program;
 
-void Prog(Program *p);
-void Instrclist(Program *p);
-void test(void);
-void Instrclist(Program *p);
-void verbose(char file[BIGNUM], int argc, char* argv[]);
 void readFile(char file[], Program* p);
-// void Code(Program *p);
-// void Statement(Program *p);
-
-
-
-void test(void){
-    return;
-}
+bool verbose(char file[BIGNUM], int argc, char* argv[]);
+bool Prog(Program *p);
+bool Instrclist(Program *p);
+bool Instrc(Program *p);

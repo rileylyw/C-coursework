@@ -4,6 +4,8 @@
         "string": "c",
         "array": "c",
         "dict.h": "c",
-        "specific.h": "c"
+        "specific.h": "c",
+        "general.c": "cpp",
+        "nlab.h": "c"
     }
 }

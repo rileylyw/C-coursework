@@ -1,21 +1,10 @@
 #include "nlab.h"
 
-int main(int argc, char* argv[]){
-   Program* prog = ncalloc(1, sizeof(Program));
-   char file[BIGNUM];
-   verbose(file, argc, argv);
-   readFile(file, prog);
-
-   Prog(prog);
-   printf("Parsed OK\n");
-   free(prog);
-   return 0;
-}
-
 void readFile(char file[], Program* p){
    FILE* fp=fopen(file, "r");
    if(fp==NULL){
-      ERROR("Cannot open file");
+      fprintf(stderr, "Cannot open file");
+      // ERROR("Cannot open file");
    }
    char buffer[BIGNUM];
    int i=0;
@@ -25,16 +14,18 @@ void readFile(char file[], Program* p){
    fclose(fp);
 }
 
-void verbose(char file[BIGNUM], int argc, char* argv[]){
+bool verbose(char file[BIGNUM], int argc, char* argv[]){
    if(argc==2){
       strcpy(file, argv[1]);
    }
    else if(argc==1){
-      ERROR("No file");
+      fprintf(stderr, "No file");
+      // ERROR("No file");
    }
+   return true;
 }
 
-void Prog(Program *p){
+bool Prog(Program *p){
    if(!strsame(p->wds[p->cw], "BEGIN")){
       ERROR("No BEGIN statement ?");
    }
@@ -42,35 +33,51 @@ void Prog(Program *p){
    if(!strsame(p->wds[p->cw], "{")){
       ERROR("Missing {");
    }
-   // Instrclist(p);
+   p->cw = p->cw + 1;
+   Instrclist(p);
+   return true;
 }
 
-// void Instrclist(Program *p){
-//    if(strsame(p->wds[p->cw], "}")){
-//       return;
-//    }
-//    // Instrc(p);
-//    p->cw = p->cw + 1;
-//    Instrclist(p);
-// }
+bool Instrclist(Program *p){
+   if(!strsame(p->wds[p->cw], "}")){
+      ERROR("Missing }");
+   }
+   Instrc(p);
+   p->cw = p->cw + 1;
+   Instrclist(p);
+   return true;
+}
 
-// void Code(Program *p)
-// {
-//    if(strsame(p->wds[p->cw], "END")){
-//       return;
-//    }
-//    Statement(p);
-//    p->cw = p->cw + 1;
-//    Code(p);
-// }
+bool Instrc(Program *p){
+   if(strsame(p->wds[p->cw], "PRINT")){
+      return true;
+   }
+   if(strsame(p->wds[p->cw], "SET")){
+      return true;
+   }
+   if(strsame(p->wds[p->cw], "CREATE")){
+      return true;
+   }
+   if(strsame(p->wds[p->cw], "LOOP")){
+      return true;
+   }
+   return false;
+}
 
-// void Statement(Program *p)
-// {
-//    if(strsame(p->wds[p->cw], "ONE")){
-//       return;
-//    }
-//    if(strsame(p->wds[p->cw], "NOUGHT")){
-//       return;
-//    }
-//    ERROR("Expecting a ONE or NOUGHT ?");
-// }
+bool Set(Program *p){
+   // p->wds[p->cw]
+   // if(!strsame(p->wds[p->cw], "SET")){
+   //    ERROR("Missing SET function");
+   // }
+   p->cw = p->cw + 1;
+   if(!strsame(p->wds[p->cw], ":=")){
+      ERROR("Incorrect operator");
+   }
+   p->cw = p->cw + 1;
+   Instrclist(p);
+   return true;
+}
+
+bool Varname(Program *p){
+
+}
