@@ -33,11 +33,11 @@ bool Prog(Program *p){
       ERROR("Missing {");
    }
    p->cw = p->cw + 1;
-   Instrclist(p);
+   InstrcList(p);
    return true;
 }
 
-bool Instrclist(Program *p){
+bool InstrcList(Program *p){
    if(strsame(p->wds[p->cw], "}")){
       return true;
    }
@@ -46,7 +46,7 @@ bool Instrclist(Program *p){
    // printf("%s\n", Instrc(p)?"TRUE":"FALSE");
    p->cw = p->cw + 1;
    // printf("string: %s\n", p->wds[p->cw]); //TODO
-   Instrclist(p);
+   InstrcList(p);
    return true;
 }
 
@@ -67,23 +67,69 @@ bool Instrc(Program *p){
    ERROR("Wrong instruction");
 }
 
+
+bool Varname(Program *p){
+   char var[2];
+   strcpy(var, p->wds[p->cw]); //e.g. $A
+   // printf("var: %c\n", var[0]);
+   // printf("var: %s\n", var);
+   if(!(var[0] == '$') || var[1]<'A' || var[1]>'Z'){
+      ERROR("Wrong variable definition");
+   }
+   // printf("var: %c\n", var[0]);
+   return true;
+}
+
 bool Set(Program *p){
    p->cw = p->cw + 1;
    // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
-   char var[2];
-   strcpy(var, p->wds[p->cw]); //e.g. $A
-   if(!strcmp(var[0], "$")==0 || var[1]<'A' || var[1]>'Z'){ //TODO
-      ERROR("Wrong variable definition");
+   if(!Varname(p)){
+      ERROR("Wrong varname");
    }
    p->cw = p->cw + 1;
    if(!strsame(p->wds[p->cw], ":=")){
       ERROR("Incorrect operator");
    }
    p->cw = p->cw + 1;
-   Instrclist(p);
+   PolishList(p);
    return true;
 }
 
-// bool Varname(Program *p){
+bool PolishList(Program *p){
+   // printf("begin %s\n", p->wds[p->cw]);
+   if(strsame(p->wds[p->cw], ";")){
+      // printf("; %s\n", p->wds[p->cw]);
+      return true;
+   }
+   if(!Polish(p)){
+      ERROR("Polish error");
+   }
+   p->cw = p->cw + 1;
+   PolishList(p);
+   return false;
+}
 
-// }
+bool Polish(Program *p){
+   if(PushDown(p)){
+      return true;
+   }
+   else if(UnaryOp(p)){
+      return true;
+   }
+   else if(BinaryOp(p)){
+      return true;
+   }
+   ERROR("Polish error");
+}
+
+bool PushDown(Program *p){
+   return true;
+}
+
+bool UnaryOp(Program *p){
+   return true;
+}
+
+bool BinaryOp(Program *p){
+   return true;
+}
