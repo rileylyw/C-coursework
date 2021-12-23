@@ -23,7 +23,7 @@
 // #define CHARACTERS 26
 
 struct var{
-   char num[BIGNUM][BIGNUM];
+   int** num; //n2dcalloc
    int height;
    int width;
 };
@@ -32,7 +32,7 @@ typedef struct var var;
 struct prog{
    char wds[MAXNUMTOKENS][MAXTOKENSIZE]; //instructions
    int cw; // Current Word
-   var* variable;
+   var variable[26];
 };
 typedef struct prog Program;
 
