@@ -4,12 +4,11 @@ void readFile(char file[], Program* p){
    FILE* fp=fopen(file, "r");
    if(fp==NULL){
       fprintf(stderr, "Cannot open file");
-      // ERROR("Cannot open file");
    }
    char buffer[BIGNUM];
-   int i=0;
+   int j=0;
    while(fscanf(fp, "%s", buffer) != EOF){
-      strcpy(p->wds[i++], buffer);
+      strcpy(p->wds[j++], buffer);
    }
    fclose(fp);
 }
@@ -39,11 +38,14 @@ bool Prog(Program *p){
 }
 
 bool Instrclist(Program *p){
-   if(!strsame(p->wds[p->cw], "}")){
-      ERROR("Missing }");
+   if(strsame(p->wds[p->cw], "}")){
+      return true;
    }
    Instrc(p);
+   // printf("string: %s\n", p->wds[p->cw]); //TODO
+   // printf("%s\n", Instrc(p)?"TRUE":"FALSE");
    p->cw = p->cw + 1;
+   // printf("string: %s\n", p->wds[p->cw]); //TODO
    Instrclist(p);
    return true;
 }
@@ -53,6 +55,7 @@ bool Instrc(Program *p){
       return true;
    }
    if(strsame(p->wds[p->cw], "SET")){
+      Set(p);
       return true;
    }
    if(strsame(p->wds[p->cw], "CREATE")){
@@ -61,14 +64,17 @@ bool Instrc(Program *p){
    if(strsame(p->wds[p->cw], "LOOP")){
       return true;
    }
-   return false;
+   ERROR("Wrong instruction");
 }
 
 bool Set(Program *p){
-   // p->wds[p->cw]
-   // if(!strsame(p->wds[p->cw], "SET")){
-   //    ERROR("Missing SET function");
-   // }
+   p->cw = p->cw + 1;
+   // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+   char var[2];
+   strcpy(var, p->wds[p->cw]); //e.g. $A
+   if(!strcmp(var[0], "$")==0 || var[1]<'A' || var[1]>'Z'){ //TODO
+      ERROR("Wrong variable definition");
+   }
    p->cw = p->cw + 1;
    if(!strsame(p->wds[p->cw], ":=")){
       ERROR("Incorrect operator");
@@ -78,6 +84,6 @@ bool Set(Program *p){
    return true;
 }
 
-bool Varname(Program *p){
+// bool Varname(Program *p){
 
-}
+// }

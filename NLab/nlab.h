@@ -41,3 +41,4 @@ bool verbose(char file[BIGNUM], int argc, char* argv[]);
 bool Prog(Program *p);
 bool Instrclist(Program *p);
 bool Instrc(Program *p);
+bool Set(Program *p);
