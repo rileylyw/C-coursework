@@ -10,6 +10,7 @@
 #define BIGNUM 1000
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
+#define CHARACTER 26
 #define strsame(A,B) (strcmp(A, B)==0)
 #ifdef TEST
    #define ERROR(PHRASE) { return false; }
@@ -32,7 +33,7 @@ typedef struct var var;
 struct prog{
    char wds[MAXNUMTOKENS][MAXTOKENSIZE]; //instructions
    int cw; // Current Word
-   var variable[26];
+   var variable[CHARACTER];
 };
 typedef struct prog Program;
 
@@ -41,10 +42,18 @@ bool verbose(char file[BIGNUM], int argc, char* argv[]);
 bool Prog(Program *p);
 bool InstrcList(Program *p);
 bool Instrc(Program *p);
+bool Print(Program *p);
 bool Set(Program *p);
 bool PolishList(Program *p);
 bool Polish(Program *p);
 bool Varname(Program *p);
+bool String(Program *p);
 bool PushDown(Program *p);
+bool Integer(Program *p);
 bool UnaryOp(Program *p);
 bool BinaryOp(Program *p);
+bool Create(Program *p);
+bool Rows(Program *p);
+bool Cols(Program *p);
+bool FileName(Program *p);
+bool Loop(Program *p);

@@ -1,3 +1,6 @@
 BEGIN {
-   SET $I := 5 ;
+   READ "lglider.arr" $A
+   SET $A := $A 2 B-ADD ;
+   PRINT "ARRAY:"
+   PRINT $A
 }
