@@ -33,7 +33,8 @@ parse_v : nlab.c nlab.h main.c
 
 test : nlab.c nlab.h test.c
 	$(CC) test.c nlab.c general.c $(CFLAGS) -O2 -DINTERP -DTEST -o test $(LDLIBS) 
-
+test_s : nlab.c nlab.h test.c
+	$(CC) test.c nlab.c general.c $(CFLAGS) $(SANI) -g3 -DINTERP -DTEST -o test_s $(LDLIBS) 
 
 
 runall : $(RESULTS)

@@ -1,6 +1,4 @@
 BEGIN {
    READ "lglider.arr" $A
    SET $A := $A 2 B-ADD ;
-   PRINT "ARRAY:"
-   PRINT $A
 }
