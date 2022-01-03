@@ -72,6 +72,7 @@ bool Instrc(Program *p){
       ERROR("CREATE error");
    }
    if(strsame(p->wds[p->cw], "LOOP")){
+      p->cw = p->cw + 1;
       if(Loop(p)){
          return true;
       };
@@ -217,8 +218,13 @@ bool PushDown(Program *p){
 }
 
 bool Integer(Program *p){
+   if(p->wds[p->cw][0] == 0){
+      return false;
+   }
    char var[BIGNUM];
    strcpy(var, p->wds[p->cw]); //e.g. 522
+   // printf("vartest %s\n", var);
+   // printf("vartest len %lu\n", strlen(var));
    for(unsigned int i=0; i<strlen(var); i++){
       if(!(var[i]<='9' && var[i]>='0')){
          // printf("var %s\n", var);
@@ -269,14 +275,14 @@ bool BinaryOp(Program *p){
 bool Create(Program *p){
    if(strsame(p->wds[p->cw], "ONES")){
       p->cw = p->cw + 1;
-      // printf("Rows %s\n", p->wds[p->cw]);
-      if(!Rows(p)){
-         ERROR("ROWS error");
+      // printf("Row %s\n", p->wds[p->cw]);
+      if(!Row(p)){
+         ERROR("Row error");
       }
       p->cw = p->cw + 1;
-      // printf("Cols %s\n", p->wds[p->cw]);
-      if(!Cols(p)){
-         ERROR("COLS error");
+      // printf("Col %s\n", p->wds[p->cw]);
+      if(!Col(p)){
+         ERROR("Col error");
       }
       p->cw = p->cw + 1;
       if(!Varname(p)){
@@ -298,18 +304,18 @@ bool Create(Program *p){
    ERROR("Create error");
 }
 
-bool Rows(Program *p){
+bool Row(Program *p){
    if(Integer(p)){
       return true;
    }
-   ERROR("Rows error");
+   ERROR("Row error");
 }
 
-bool Cols(Program *p){
+bool Col(Program *p){
    if(Integer(p)){
       return true;
    }
-   ERROR("Cols error");
+   ERROR("Col error");
 }
 
 bool FileName(Program *p){
@@ -320,7 +326,7 @@ bool FileName(Program *p){
 }
 
 bool Loop(Program *p){
-   p->cw = p->cw + 1;
+   // p->cw = p->cw + 1;
    if(!Varname(p)){
       ERROR("Varname error");
    }

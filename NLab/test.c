@@ -210,7 +210,6 @@ int main(void){
    i = 0; 
    while(string_polishlist_valid[i][0] != 0){
       ExtractToken(string_polishlist_valid, prog, i); //store string to prog
-      // printf("prog->wds[0]: %s\n", prog->wds[0]);
       assert(PolishList(prog));
       Reset(prog);
       i++;
@@ -218,7 +217,6 @@ int main(void){
    i = 0; 
    while(string_polishlist_invalid[i][0] != 0){
       ExtractToken(string_polishlist_invalid, prog, i);
-      // printf("prog->wds[0]: %s\n", prog->wds[0]);
       assert(!PolishList(prog));
       Reset(prog);
       i++;
@@ -233,13 +231,12 @@ int main(void){
    };
    char string_polish_invalid[NUM][NUM] = {
       {"A"}, //not var
-      {"!!!"}, //not var nor int
-      {" "}, //????
+      {"!!!test"}, //not var nor int
+      {" "}, //empty
    };
    i = 0; 
    while(string_polish_valid[i][0] != 0){
       ExtractToken(string_polish_valid, prog, i); //store string to prog
-      // printf("prog->wds[0]: %s\n", prog->wds[0]);
       assert(Polish(prog));
       Reset(prog);
       i++;
@@ -247,27 +244,246 @@ int main(void){
    i = 0; 
    while(string_polish_invalid[i][0] != 0){
       ExtractToken(string_polish_invalid, prog, i);
-      // printf("prog->wds[0]: %s\n", prog->wds[0]);
       assert(!Polish(prog));
       Reset(prog);
       i++;
    }
 
+/*** TEST PUSHDOWN ***/
+   char string_pushdown_valid[NUM][NUM] = {
+      {"99999999"}, //int
+      {"$Z"}, //var
+   };
+   char string_pushdown_invalid[NUM][NUM] = {
+      {"A"}, //not var
+      {"$ZZZZ"}, //invalid var
+      {"!!!test"}, //not var nor int
+      {" "}, //empty
+   };
+   i = 0; 
+   while(string_pushdown_valid[i][0] != 0){
+      ExtractToken(string_pushdown_valid, prog, i); //store string to prog
+      assert(PushDown(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_pushdown_invalid[i][0] != 0){
+      ExtractToken(string_pushdown_invalid, prog, i);
+      assert(!PushDown(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST INTEGER ***/
+   char string_integer_valid[NUM][NUM] = {
+      {"99999999999"}, //int
+   };
+   char string_integer_invalid[NUM][NUM] = {
+      {"123076!"}, //not int
+      {" "}, //empty
+   };
+   i = 0; 
+   while(string_integer_valid[i][0] != 0){
+      ExtractToken(string_integer_valid, prog, i); //store string to prog
+      assert(Integer(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_integer_invalid[i][0] != 0){
+      ExtractToken(string_integer_invalid, prog, i);
+      assert(!Integer(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST UNARYOP ***/
+   char string_unaryop_valid[NUM][NUM] = {
+      {"U-NOT"}, 
+      {"U-EIGHTCOUNT"}, 
+   };
+   char string_unaryop_invalid[NUM][NUM] = {
+      {"NOT"},
+      {"123"},
+   };
+   i = 0; 
+   while(string_unaryop_valid[i][0] != 0){
+      ExtractToken(string_unaryop_valid, prog, i); //store string to prog
+      assert(UnaryOp(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_unaryop_invalid[i][0] != 0){
+      ExtractToken(string_unaryop_invalid, prog, i);
+      assert(!UnaryOp(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST BINARYOP ***/
+   char string_binaryop_valid[NUM][NUM] = {
+      {"B-AND"}, 
+      {"B-OR"}, 
+      {"B-GREATER"}, 
+      {"B-LESS"}, 
+      {"B-ADD"}, 
+      {"B-TIMES"}, 
+      {"B-EQUALS"}, 
+   };
+   char string_binaryop_invalid[NUM][NUM] = {
+      {"U-NOT"},
+      {"123"},
+   };
+   i = 0; 
+   while(string_binaryop_valid[i][0] != 0){
+      ExtractToken(string_binaryop_valid, prog, i); //store string to prog
+      assert(BinaryOp(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_binaryop_invalid[i][0] != 0){
+      ExtractToken(string_binaryop_invalid, prog, i);
+      assert(!BinaryOp(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST CREATE ***/
+   char string_create_valid[NUM][NUM] = {
+      {"ONES 6 5 $A"},  
+      {"READ \"file.arr\" $P"}, 
+   };
+   char string_create_invalid[NUM][NUM] = {
+      {"ONES 6 5"}, //missing var  
+      {"ONES 6 $A"}, //missing row / col
+      {"ONES $A 6 5"}, //wrong sequence
+      {"READ file.arr $P"}, //missing "" for file name
+      {"READ \"file.arr\" 123"}, // missing var 
+      {"READ $P \"file.arr\""}, //wrong sequence
+      {"6 5 $A"}, //no instruction
+   };
+   i = 0; 
+   while(string_create_valid[i][0] != 0){
+      ExtractToken(string_create_valid, prog, i); //store string to prog
+      assert(Create(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_create_invalid[i][0] != 0){
+      ExtractToken(string_create_invalid, prog, i);
+      assert(!Create(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST ROW ***/
+   char string_row_valid[NUM][NUM] = {
+      {"999999"}, //int  
+   };
+   char string_row_invalid[NUM][NUM] = {
+      {"A"},
+   };
+   i = 0; 
+   while(string_row_valid[i][0] != 0){
+      ExtractToken(string_row_valid, prog, i); //store string to prog
+      assert(Row(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_row_invalid[i][0] != 0){
+      ExtractToken(string_row_invalid, prog, i);
+      assert(!Row(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST COL ***/
+   char string_col_valid[NUM][NUM] = {
+      {"999999"}, //int  
+   };
+   char string_col_invalid[NUM][NUM] = {
+      {"A"},
+   };
+   i = 0; 
+   while(string_col_valid[i][0] != 0){
+      ExtractToken(string_col_valid, prog, i); //store string to prog
+      assert(Col(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_col_invalid[i][0] != 0){
+      ExtractToken(string_col_invalid, prog, i);
+      assert(!Col(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST FILENAME ***/
+   char string_filename_valid[NUM][NUM] = {
+      {"\"file\""}, //string
+   };
+   char string_filename_invalid[NUM][NUM] = {
+      {"file"},
+   };
+   i = 0; 
+   while(string_filename_valid[i][0] != 0){
+      ExtractToken(string_filename_valid, prog, i); //store string to prog
+      assert(FileName(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_filename_invalid[i][0] != 0){
+      ExtractToken(string_filename_invalid, prog, i);
+      assert(!FileName(prog));
+      Reset(prog);
+      i++;
+   }
+
+/*** TEST LOOP ***/
+   char string_loop_valid[NUM][NUM] = {
+      {"$I 10 {"},
+   };
+   char string_loop_invalid[NUM][NUM] = {
+      {"$I {"}, //missing int
+      {"$I 10"}, //missing {
+      {"I 10 {"}, //invalid var
+   };
+   i = 0; 
+   while(string_loop_valid[i][0] != 0){
+      ExtractToken(string_loop_valid, prog, i); //store string to prog
+      // printf("prog->wds[0]: %s\n", prog->wds[0]);
+      assert(Loop(prog));
+      Reset(prog);
+      i++;
+   }
+   i = 0; 
+   while(string_loop_invalid[i][0] != 0){
+      ExtractToken(string_loop_invalid, prog, i);
+      // printf("prog->wds[0]: %s\n", prog->wds[0]);
+      assert(!Loop(prog));
+      Reset(prog);
+      i++;
+   }
 
    free(prog);
-
    return EXIT_SUCCESS;
 }
 
 void ExtractToken(char string[NUM][NUM], Program *p, int pos){
-   char* token = strtok(string[pos], " "); //TODO: fix valgrind error
+   char* token = strtok(string[pos], " ");
    int i = 0;
    while(token != NULL){
       strcpy(p->wds[i++], token);
       // printf("%s\n", token); //printing each token
       token = strtok(NULL, " ");
    }
-   // free(token);
 }
 
 void Reset(Program *p){
