@@ -9,8 +9,16 @@ int main(int argc, char* argv[]){
    Prog(prog);
    
    #ifdef INTERP
-   printf("Parsed OK\n");
+   // printf("Parsed OK\n");
+   for(int i=0; i<CHARACTER; i++){
+      if(prog->variable[i] != NULL){
+         n2dfree(prog->variable[i]->num, 1); //TODO: matrix
+         free(prog->variable[i]);
+         printf("%s", "INTERP OK");
+      }
+   }
    #endif
+
    free(prog);
    return 0;
 }

@@ -15,7 +15,7 @@ void* ncalloc(int n, size_t size)
    return v;
 }
 
-void n2dfree(void**p, int h)
+void n2dfree(int** p, int h)
 {
    int i;
    for(i=0; i<h; i++){
@@ -24,7 +24,7 @@ void n2dfree(void**p, int h)
    free(p);
 }
 
-void** n2drecalloc(void** p, int oh, int nh, int ow, int nw, size_t szelem)
+void** n2drecalloc(int** p, int oh, int nh, int ow, int nw, size_t szelem)
 {
 
    void** n;
@@ -42,8 +42,7 @@ void** n2dcalloc(int h, int w, size_t szelem)
 {
 
    int i;
-   void** p;
-   p = calloc(h, sizeof(void*));
+   void** p = (void**)calloc(h, sizeof(void*));
    if(p==NULL){
       on_error("Cannot calloc() space");
    }

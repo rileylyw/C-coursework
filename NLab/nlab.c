@@ -99,10 +99,10 @@ bool Varname(Program *p){
       return false;
       // ERROR("Wrong varname2");
    }
-   // printf("varname: %d\n", len);
+
    char* var = (char*)ncalloc(len+1, sizeof(char));
    strcpy(var, p->wds[p->cw]);
-   // printf("varname: %s\n", var);
+
    if(!(var[0] == '$') || var[1]<'A' || var[1]>'Z'){
       free(var);
       return false;
@@ -211,7 +211,25 @@ bool PushDown(Program *p){
       return true;
    }
    else if(Integer(p)){
-      // printf("int %s\n", p->wds[p->cw]);
+      #ifdef INTERP
+      // printf("int: %s\n", p->wds[p->cw]);
+      
+      int pos = (int)(p->wds[p->cw-2][1]) - 'A'; //respective var
+      p->variable[pos] = (var*) ncalloc(1, sizeof(var));
+      p->variable[pos]->num = (int**)n2dcalloc(1, 1, sizeof(int*));
+      p->variable[pos]->height = 1;
+      p->variable[pos]->width = 1;
+      for(int j=0; j<p->variable[pos]->height; j++){ //row
+         for(int i=0; i<p->variable[pos]->width; i++){ //col
+            p->variable[pos]->num[j][i] = p->wds[p->cw][0] - '0';
+            printf("word: %d\n", p->variable[pos]->num[j][i]);
+         }
+      }
+      #endif
+
+      // printf("int: %d\n", p->variable[0]->height);
+      // n2dfree(p->variable[pos]->num, 1);
+      // free(p->variable[pos]);
       return true;
    }
    return false;

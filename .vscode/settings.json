@@ -6,6 +6,7 @@
         "dict.h": "c",
         "specific.h": "c",
         "general.c": "cpp",
-        "nlab.h": "c"
+        "nlab.h": "c",
+        "strings.h": "c"
     }
 }

@@ -6,6 +6,8 @@
 #include <assert.h>
 
 #include "general.h"
+// #include "stack.h" //TBC
+// #include "specific.h" //TBC
 
 #define BIGNUM 1000
 #define MAXNUMTOKENS 100
@@ -21,8 +23,6 @@
             exit(EXIT_FAILURE); }
 #endif
 
-// #define CHARACTERS 26
-
 struct var{
    int** num; //n2dcalloc
    int height;
@@ -33,7 +33,7 @@ typedef struct var var;
 struct prog{
    char wds[MAXNUMTOKENS][MAXTOKENSIZE]; //instructions
    int cw; // Current Word
-   var variable[CHARACTER];
+   var* variable[CHARACTER];
 };
 typedef struct prog Program;
 

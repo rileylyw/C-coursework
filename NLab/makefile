@@ -31,10 +31,15 @@ parse_v : nlab.c nlab.h main.c
 
 
 
-test : nlab.c nlab.h test.c
-	$(CC) test.c nlab.c general.c $(CFLAGS) -O2 -DINTERP -DTEST -o test $(LDLIBS) 
-test_s : nlab.c nlab.h test.c
-	$(CC) test.c nlab.c general.c $(CFLAGS) $(SANI) -g3 -DINTERP -DTEST -o test_s $(LDLIBS) 
+test_parse : nlab.c nlab.h test.c
+	$(CC) test.c nlab.c general.c $(CFLAGS) -O2 -DTEST -o test_parse $(LDLIBS) 
+test_parse_s : nlab.c nlab.h test.c
+	$(CC) test.c nlab.c general.c $(CFLAGS) $(SANI) -g3 -DTEST -o test_parse_s $(LDLIBS) 
+
+test_interp : nlab.c nlab.h test.c
+	$(CC) test.c nlab.c general.c $(CFLAGS) -O2 -DINTERP -DTEST -o test_interp $(LDLIBS) 
+test_interp_s : nlab.c nlab.h test.c
+	$(CC) test.c nlab.c general.c $(CFLAGS) $(SANI) -g3 -DINTERP -DTEST -o test_interp_s $(LDLIBS) 
 
 
 runall : $(RESULTS)
