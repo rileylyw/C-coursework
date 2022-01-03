@@ -52,12 +52,14 @@ bool InstrcList(Program *p){
 bool Instrc(Program *p){
    if(strsame(p->wds[p->cw], "PRINT")){
       // printf("Instrc %s\n", p->wds[p->cw]);
+      p->cw = p->cw + 1;
       if(Print(p)){
          return true;
       };
       ERROR("PRINT error");
    }
    if(strsame(p->wds[p->cw], "SET")){
+      p->cw = p->cw + 1;
       if(Set(p)){
          return true;
       }
@@ -79,12 +81,12 @@ bool Instrc(Program *p){
 }
 
 bool Print(Program *p){
-   p->cw = p->cw + 1;
+   // p->cw = p->cw + 1;
    if(Varname(p)){
       return true;
    }
    else if(String(p)){
-      printf("String %s\n", p->wds[p->cw]);
+      // printf("String %s\n", p->wds[p->cw]);
       return true;
    }
    ERROR("Print error");
@@ -92,8 +94,13 @@ bool Print(Program *p){
 
 bool Varname(Program *p){
    int len = strlen(p->wds[p->cw]);
+   if(len != 2){
+      return false;
+      // ERROR("Wrong varname2");
+   }
+   // printf("varname: %d\n", len);
    char* var = (char*)ncalloc(len+1, sizeof(char));
-   strcpy(var, p->wds[p->cw]);  //TODO: if $ABC
+   strcpy(var, p->wds[p->cw]);
    // printf("varname: %s\n", var);
    if(!(var[0] == '$') || var[1]<'A' || var[1]>'Z'){
       free(var);
@@ -107,9 +114,12 @@ bool Varname(Program *p){
 
 bool String(Program *p){
    int len = strlen(p->wds[p->cw]);
+   if(len == 0 || strsame(p->wds[p->cw], " ")){
+      ERROR("No string or empty");
+   }
    char* string = (char*)ncalloc(len+1, sizeof(char));
    strcpy(string, p->wds[p->cw]);
-   printf("string: %s\n", string);
+   // printf("string: %s\n", string);
    // printf("string[0]: %c\n", string[0]);
    // printf("string[last]: %c\n", string[strlen(p->wds[p->cw])-1]);
    int count = 0;
@@ -129,10 +139,10 @@ bool String(Program *p){
 }
 
 bool Set(Program *p){
-   p->cw = p->cw + 1; //$I
+   // p->cw = p->cw + 1; //$I
    // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
    if(!Varname(p)){
-      printf("set: %s\n", p->wds[p->cw]);
+      // printf("set: %s\n", p->wds[p->cw]);
       ERROR("Wrong varname");
    }
    p->cw = p->cw + 1;
@@ -157,7 +167,7 @@ bool PolishList(Program *p){
       ERROR("NULL");
    }
    if(strsame(p->wds[p->cw], ";")){
-      printf("TESTING3 %s\n", p->wds[p->cw]);
+      // printf("TESTING3 %s\n", p->wds[p->cw]);
       return true;
    }
    if(!Polish(p)){
@@ -184,11 +194,11 @@ bool Polish(Program *p){
       return true;
    }
    else if(UnaryOp(p)){
-      printf("UnaryOp %s\n", p->wds[p->cw]);
+      // printf("UnaryOp %s\n", p->wds[p->cw]);
       return true;
    }
    else if(BinaryOp(p)){
-      printf("BinaryOp %s\n", p->wds[p->cw]);
+      // printf("BinaryOp %s\n", p->wds[p->cw]);
       return true;
    }
    ERROR("Polish error");
@@ -252,8 +262,8 @@ bool BinaryOp(Program *p){
    else if(strsame(p->wds[p->cw], "B-EQUALS")){
       return true;
    }
-   return false;
-   // ERROR("BinaryOp error");
+   // return false;
+   ERROR("BinaryOp error");
 }
 
 bool Create(Program *p){

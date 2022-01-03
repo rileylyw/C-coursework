@@ -1,4 +1,4 @@
-# John Conway's Game of LIFE (B3/S23)
+
 BEGIN {
 
    READ "lglider.arr" $A
