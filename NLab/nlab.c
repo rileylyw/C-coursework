@@ -84,10 +84,35 @@ bool Instrc(Program *p){
 bool Print(Program *p){
    // p->cw = p->cw + 1;
    if(Varname(p)){
+      #ifdef INTERP
+      int pos = (int)(p->wds[p->cw][1]) - 'A'; //respective var ascii
+      for(int j=0; j<p->variable[pos]->height; j++){ //row
+         for(int i=0; i<p->variable[pos]->width; i++){ //col
+            if(p->variable[pos]->height > 1){
+               printf("%d ", p->variable[pos]->num[j][i]);
+            }
+            else{
+               printf("%d\n", p->variable[pos]->num[j][i]);
+            }
+         }
+         if(p->variable[pos]->height > 1){
+            printf("\n");
+         }
+      }
+      #endif
+
       return true;
    }
    else if(String(p)){
-      // printf("String %s\n", p->wds[p->cw]);
+      #ifdef INTERP
+      int len = strlen(p->wds[p->cw]);
+      for(int i=0; i<len; i++){
+         if(p->wds[p->cw][i] != '"'){
+            printf("%c", p->wds[p->cw][i]);
+         }
+      }
+      printf("\n");
+      #endif
       return true;
    }
    ERROR("Print error");
@@ -212,24 +237,11 @@ bool PushDown(Program *p){
    }
    else if(Integer(p)){
       #ifdef INTERP
-      // printf("int: %s\n", p->wds[p->cw]);
-      
-      int pos = (int)(p->wds[p->cw-2][1]) - 'A'; //respective var
-      p->variable[pos] = (var*) ncalloc(1, sizeof(var));
-      p->variable[pos]->num = (int**)n2dcalloc(1, 1, sizeof(int*));
-      p->variable[pos]->height = 1;
-      p->variable[pos]->width = 1;
-      for(int j=0; j<p->variable[pos]->height; j++){ //row
-         for(int i=0; i<p->variable[pos]->width; i++){ //col
-            p->variable[pos]->num[j][i] = p->wds[p->cw][0] - '0';
-            printf("word: %d\n", p->variable[pos]->num[j][i]);
-         }
-      }
+      int pos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
+      int value = (int) p->wds[p->cw][0] - '0';
+      AllocSpace(p, 1, 1, pos);
+      AssignValues(p, pos, value);
       #endif
-
-      // printf("int: %d\n", p->variable[0]->height);
-      // n2dfree(p->variable[pos]->num, 1);
-      // free(p->variable[pos]);
       return true;
    }
    return false;
@@ -303,7 +315,7 @@ bool Create(Program *p){
          ERROR("Col error");
       }
       p->cw = p->cw + 1;
-      if(!Varname(p)){
+      if(!Varname(p)){ //TODO: check varname valid first b4 allocating space?
          ERROR("Varname error");
       }
       return true;
@@ -324,6 +336,7 @@ bool Create(Program *p){
 
 bool Row(Program *p){
    if(Integer(p)){
+      // printf("%d\n", (int)p->wds[p->cw][0] - '0'); //turn s to d
       return true;
    }
    ERROR("Row error");
@@ -331,6 +344,21 @@ bool Row(Program *p){
 
 bool Col(Program *p){
    if(Integer(p)){
+      #ifdef INTERP
+      int pos = (int)(p->wds[p->cw+1][1]) - 'A'; //respective var ascii
+      // printf("int: %d\n", (int)(p->wds[p->cw+1][1]) - 'A');
+      // p->variable[pos] = (var*) ncalloc(1, sizeof(var));
+      // p->variable[pos]->height = (int)(p->wds[p->cw-1][0] - '0');
+      // // printf("height: %d\n", p->variable[pos]->height);
+      // p->variable[pos]->width = (int)(p->wds[p->cw][0] - '0');
+      // // printf("width: %d\n", p->variable[pos]->width);
+      // p->variable[pos]->num = (int**)n2dcalloc(p->variable[pos]->height, p->variable[pos]->width, sizeof(int*));
+      
+      int h = (int)(p->wds[p->cw-1][0] - '0');
+      int w = (int)(p->wds[p->cw][0] - '0');
+      AllocSpace(p, h, w, pos);
+      AssignValues(p, pos, 1);
+      #endif
       return true;
    }
    ERROR("Col error");
@@ -359,4 +387,20 @@ bool Loop(Program *p){
    p->cw = p->cw + 1;
    InstrcList(p);
    return true;
+}
+
+void AssignValues(Program *p, int pos, int value){
+   for(int j=0; j<p->variable[pos]->height; j++){ //row
+      for(int i=0; i<p->variable[pos]->width; i++){ //col
+         p->variable[pos]->num[j][i] = value;
+         // printf("word: %d\n", p->variable[pos]->num[j][i]);
+      }
+   }
+}
+
+void AllocSpace(Program *p, int h, int w, int pos){
+   p->variable[pos] = (var*) ncalloc(1, sizeof(var));
+   p->variable[pos]->height = h;
+   p->variable[pos]->width = w;
+   p->variable[pos]->num = (int**)n2dcalloc(h, w, sizeof(int*));
 }

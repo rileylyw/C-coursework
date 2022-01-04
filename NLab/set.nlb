@@ -1,3 +1,6 @@
 BEGIN {
+   ONES 6 5 $B
    SET $A := 2 ;
+   PRINT "TESTING123123!!!"
+   PRINT $B
 }

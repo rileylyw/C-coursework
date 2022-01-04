@@ -57,3 +57,5 @@ bool Row(Program *p);
 bool Col(Program *p);
 bool FileName(Program *p);
 bool Loop(Program *p);
+void AssignValues(Program *p, int pos, int value);
+void AllocSpace(Program *p, int h, int w, int pos);
