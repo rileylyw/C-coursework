@@ -7,6 +7,7 @@
         "specific.h": "c",
         "general.c": "cpp",
         "nlab.h": "c",
-        "strings.h": "c"
+        "strings.h": "c",
+        "type_traits": "c"
     }
 }

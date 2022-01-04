@@ -128,7 +128,7 @@ bool Varname(Program *p){
    char* var = (char*)ncalloc(len+1, sizeof(char));
    strcpy(var, p->wds[p->cw]);
 
-   if(!(var[0] == '$') || var[1]<'A' || var[1]>'Z'){
+   if(!(var[0] == '$' && var[1] >= 'A' && var[1] <= 'Z')){
       free(var);
       return false;
       // ERROR("Wrong variable definition");
@@ -201,13 +201,7 @@ bool PolishList(Program *p){
       ERROR("Polish error");
    }
    p->cw = p->cw + 1;
-   // printf("TESTING %d\n", p->wds[p->cw][0]);
-   // if(p->wds[p->cw] && !p->wds[p->cw][0]){
-   //    printf("TESTING2 %d\n", p->wds[p->cw][0]);
-   //    ERROR("NULL");
-   // }
    PolishList(p);
-   // printf("%s\n", "TEST");
    if(!(strsame(p->wds[p->cw], ";"))){
       ERROR("Missing ;");
    }
@@ -237,10 +231,21 @@ bool PushDown(Program *p){
    }
    else if(Integer(p)){
       #ifdef INTERP
-      int pos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-      int value = (int) p->wds[p->cw][0] - '0';
-      AllocSpace(p, 1, 1, pos);
-      AssignValues(p, pos, value);
+      p->cw = p->cw - 2;
+      
+      // printf("test %c\n", p->wds[p->cw-2][0]);
+      if(Varname(p)){
+      // if(p->wds[p->cw-1][0]=='$' && p->wds[p->cw-1][1]<'A' && p->wds[p->cw-][1]>'Z'){ //check if set one value or other op
+         p->cw = p->cw + 2;
+         int pos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
+         int value = atoi(p->wds[p->cw]);
+         // int value = (int) p->wds[p->cw][0] - '0';
+         AllocSpace(p, 1, 1, pos);
+         AssignValues(p, pos, value);
+      }
+      else{
+         p->cw = p->cw + 2;
+      }
       #endif
       return true;
    }
@@ -290,6 +295,11 @@ bool BinaryOp(Program *p){
       return true;
    }
    else if(strsame(p->wds[p->cw], "B-ADD")){
+      #ifdef INTERP
+      int pos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
+      int value = atoi(p->wds[p->cw-1]);
+      AssignValues(p, pos, value);
+      #endif
       return true;
    }
    else if(strsame(p->wds[p->cw], "B-TIMES")){
@@ -353,9 +363,11 @@ bool Col(Program *p){
       // p->variable[pos]->width = (int)(p->wds[p->cw][0] - '0');
       // // printf("width: %d\n", p->variable[pos]->width);
       // p->variable[pos]->num = (int**)n2dcalloc(p->variable[pos]->height, p->variable[pos]->width, sizeof(int*));
-      
-      int h = (int)(p->wds[p->cw-1][0] - '0');
-      int w = (int)(p->wds[p->cw][0] - '0');
+
+      int h = atoi(p->wds[p->cw-1]);
+      int w = atoi(p->wds[p->cw]);
+      // int h = (int)(p->wds[p->cw-1][0] - '0');
+      // int w = (int)(p->wds[p->cw][0] - '0');
       AllocSpace(p, h, w, pos);
       AssignValues(p, pos, 1);
       #endif
@@ -389,10 +401,11 @@ bool Loop(Program *p){
    return true;
 }
 
+#ifdef INTERP
 void AssignValues(Program *p, int pos, int value){
    for(int j=0; j<p->variable[pos]->height; j++){ //row
       for(int i=0; i<p->variable[pos]->width; i++){ //col
-         p->variable[pos]->num[j][i] = value;
+         p->variable[pos]->num[j][i] += value;
          // printf("word: %d\n", p->variable[pos]->num[j][i]);
       }
    }
@@ -404,3 +417,4 @@ void AllocSpace(Program *p, int h, int w, int pos){
    p->variable[pos]->width = w;
    p->variable[pos]->num = (int**)n2dcalloc(h, w, sizeof(int*));
 }
+#endif
