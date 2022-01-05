@@ -298,7 +298,9 @@ bool BinaryOp(Program *p){
       #ifdef INTERP
       int pos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
       int value = atoi(p->wds[p->cw-1]);
-      AssignValues(p, pos, value);
+
+      AssignValues(p, pos, value); //TODO: change to stack
+  
       #endif
       return true;
    }

@@ -4,11 +4,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <limits.h>
 
 #include "general.h"
-// #include "stack.h" //TBC
-// #include "specific.h" //TBC
+#include "stack.h"
 
+#define FORMATSTR "%i"
+#define ELEMSIZE 20
+#define STACKTYPE "Linked"
 #define BIGNUM 1000
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
@@ -36,6 +39,19 @@ struct prog{
    var* variable[CHARACTER];
 };
 typedef struct prog Program;
+
+// struct dataframe {
+//    stacktype i; //value
+//    struct dataframe* next;
+// };
+// typedef struct dataframe dataframe;
+
+// struct stack {
+//    /* Underlying array */
+//    dataframe* start;
+//    int size;
+// };
+// typedef struct stack stack;
 
 void readFile(char file[], Program* p);
 bool verbose(char file[BIGNUM], int argc, char* argv[]);

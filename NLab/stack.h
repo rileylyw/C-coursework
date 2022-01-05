@@ -1,9 +1,21 @@
 #pragma once
 
 #include "general.h"
+#include "nlab.h"
 
 typedef int stacktype;
 
+struct dataframe {
+   stacktype i; //value
+   struct dataframe* next;
+};
+typedef struct dataframe dataframe;
+
+struct stack {
+   /* Underlying array */
+   dataframe* start;
+   int size;
+};
 typedef struct stack stack;
 
 #include <stdio.h>
