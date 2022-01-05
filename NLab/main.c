@@ -17,6 +17,7 @@ int main(int argc, char* argv[]){
          // printf("INTERP OK\n");
       }
    }
+   //TODO: free stack
    #endif
 
    free(prog);

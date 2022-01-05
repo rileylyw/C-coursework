@@ -1,21 +1,11 @@
 #pragma once
 
 #include "general.h"
+#include "specific.h"
 #include "nlab.h"
 
-typedef int stacktype;
+// typedef int stacktype;
 
-struct dataframe {
-   stacktype i; //value
-   struct dataframe* next;
-};
-typedef struct dataframe dataframe;
-
-struct stack {
-   /* Underlying array */
-   dataframe* start;
-   int size;
-};
 typedef struct stack stack;
 
 #include <stdio.h>
@@ -26,18 +16,18 @@ typedef struct stack stack;
 /* Create an empty stack */
 stack* stack_init(void);
 /* Add element to top */
-void stack_push(stack* s, stacktype i);
+void stack_push(stack* s, var i);
 /* Take element from top */
-bool stack_pop(stack* s, stacktype* d);
+bool stack_pop(stack* s, var* d);
 /* Clears all space used */
 bool stack_free(stack* s);
 
 /* Optional? */
 
-/* Copy top element into d (but don't pop it) */
-bool stack_peek(stack*s,  stacktype* d);
-/* Make a string version - keep .dot in mind */
-void stack_tostring(stack*, char* str);
+// /* Copy top element into d (but don't pop it) */
+// bool stack_peek(stack*s,  var* d);
+// /* Make a string version - keep .dot in mind */
+// void stack_tostring(stack*, char* str);
 
 
 

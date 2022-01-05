@@ -2,16 +2,15 @@
 
 #define FORMATSTR "%i"
 #define ELEMSIZE 20
-#define STACKTYPE "Linked"
 
-struct dataframe {
-   stacktype i;
-   struct dataframe* next;
-};
-typedef struct dataframe dataframe;
+#define STACKTYPE "Realloc"
+
+#define FIXEDSIZE 16
+#define SCALEFACTOR 2
 
 struct stack {
    /* Underlying array */
-   dataframe* start;
+   var* a;
    int size;
+   int capacity;
 };

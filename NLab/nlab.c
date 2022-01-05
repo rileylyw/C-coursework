@@ -25,6 +25,7 @@ bool verbose(char file[BIGNUM], int argc, char* argv[]){
 }
 
 bool Prog(Program *p){
+   p->stack = stack_init();
    if(!strsame(p->wds[p->cw], "BEGIN")){
       ERROR("No BEGIN statement ?");
    }
@@ -34,6 +35,7 @@ bool Prog(Program *p){
    }
    p->cw = p->cw + 1;
    InstrcList(p);
+   stack_free(p->stack);
    return true;
 }
 
@@ -245,6 +247,21 @@ bool PushDown(Program *p){
       }
       else{
          p->cw = p->cw + 2;
+         // int pos = (int) p->wds[p->cw-1][1] - 'A'; //respective var ascii
+         // int value = atoi(p->wds[p->cw]);
+         // var* temp = (var*) ncalloc(1, sizeof(var));
+         // temp->height = 1;
+         // temp->height = p->variable[pos]->height;
+         // temp->width = p->variable[pos]->width;
+         // temp->num = (int**)n2dcalloc(p->variable[pos]->height, p->variable[pos]->width, sizeof(int*));
+         // for(int j=0; j<p->variable[pos]->height; j++){ //row
+         //    for(int i=0; i<p->variable[pos]->width; i++){ //col
+         //       temp->num[j][i] += value;
+         //       printf("word: %d\n", temp->num[j][i]);
+         //    }
+         // }
+         // printf("p->variable[pos]->height %d\n", p->variable[pos]->height);
+         // printf("test %d\n", temp->height);
       }
       #endif
       return true;
@@ -298,9 +315,17 @@ bool BinaryOp(Program *p){
       #ifdef INTERP
       int pos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
       int value = atoi(p->wds[p->cw-1]);
+      stack_push(p->stack, p->variable[pos]);
+      var* temp = MakeIntMatrix(p, pos, value);
+      stack_push(p->stack, temp);
+      // stack_pop(s,p->variable[pos]);
+      // stack_pop(s,p->variable[pos]);
+      FreeIntMatrix(temp); //TODO: add operation
+      // printf("word: %d\n", p->stack->a[p->stack->size-4].num[0][0]);
+      // printf("size: %d\n", p->stack->size);
+      // AssignValues(p, pos, value); 
 
-      AssignValues(p, pos, value); //TODO: change to stack
-  
+      // stack_free(s);
       #endif
       return true;
    }
@@ -372,6 +397,18 @@ bool Col(Program *p){
       // int w = (int)(p->wds[p->cw][0] - '0');
       AllocSpace(p, h, w, pos);
       AssignValues(p, pos, 1);
+
+      /** stack eg**/
+      // stack* s = stack_init();
+      // stack_push(s, p->variable[pos]); //TODO
+      // stack_pop(s, p->variable[pos]); //TODO
+      // printf("word: %d\n", p->variable[pos]->num[0][0]); //TODO
+      // printf("word: %d\n", s->a[s->size].num[0][0]);
+      // printf("size: %d\n", s->size);
+      // stack_free(s);
+
+      // AllocSpace(p, h, w, pos);
+      // AssignValues(p, pos, 1);
       #endif
       return true;
    }
@@ -404,7 +441,7 @@ bool Loop(Program *p){
 }
 
 #ifdef INTERP
-void AssignValues(Program *p, int pos, int value){
+void AssignValues(Program *p, int pos, int value){ //stack push
    for(int j=0; j<p->variable[pos]->height; j++){ //row
       for(int i=0; i<p->variable[pos]->width; i++){ //col
          p->variable[pos]->num[j][i] += value;
@@ -413,10 +450,102 @@ void AssignValues(Program *p, int pos, int value){
    }
 }
 
-void AllocSpace(Program *p, int h, int w, int pos){
+void AllocSpace(Program *p, int h, int w, int pos){ //stack init
    p->variable[pos] = (var*) ncalloc(1, sizeof(var));
    p->variable[pos]->height = h;
    p->variable[pos]->width = w;
    p->variable[pos]->num = (int**)n2dcalloc(h, w, sizeof(int*));
 }
+
+stack* stack_init(void)
+{
+   stack *s = (stack*) ncalloc(1, sizeof(stack));
+   /* Some implementations would allow you to pass
+      a hint about the initial size of the stack */
+   s->a = (var*) ncalloc(FIXEDSIZE, sizeof(var));
+   s->size = 0;
+   s->capacity= FIXEDSIZE;
+   return s;
+}
+
+void stack_push(stack* s, var* d)
+{
+   if(s==NULL){
+      return;
+   }
+   if(s->size >= s->capacity){
+      s->a = (var*) nremalloc(s->a,
+            sizeof(var)*s->capacity*SCALEFACTOR);
+      s->capacity = s->capacity*SCALEFACTOR;
+   }
+   
+   // printf("word: %d\n", s->a[s->size].height); //TODO
+   s->a[s->size].height = d->height;
+   // printf("s->a[s->size].height: %d\n", s->a[s->size].height);
+   s->a[s->size].width = d->width;
+   s->a[s->size].num = (int**)n2dcalloc(d->height, d->width, sizeof(int*)); //TODO FREE
+   // printf("s->a[s->size].width: %d\n", s->a[s->size].width);
+   // printf("test");
+   for(int j=0; j<d->height; j++){ //row
+      for(int i=0; i<d->width; i++){ //col
+         s->a[s->size].num[j][i] = d->num[j][i];
+         // printf("word: %d\n", s->a[s->size].num[j][i]); //TODO
+      }
+   }
+   s->size = s->size + 1;
+}
+
+bool stack_pop(stack* s, var* d)
+{
+   if((s == NULL) || (s->size < 1)){
+      return false;
+   }
+   // n2dfree(s->a->num, s->a->height);
+   s->size = s->size - 1;
+   // *d = s->a[s->size];
+
+   for(int j=0; j<d->height; j++){ //row
+      for(int i=0; i<d->width; i++){ //col
+         d->num[j][i] = s->a[s->size].num[j][i];
+         // printf("word: %d\n", d->num[j][i]); //TODO
+      }
+   }
+   //stack_free
+   return true;
+}
+
+
+bool stack_free(stack* s)
+{
+   if(s==NULL){
+      return true;
+   }
+   for(int i=0; i<s->size; i++){ 
+      n2dfree(s->a[i].num, s->a->height);
+   }
+   free(s->a);
+   free(s);
+   return true;
+}
+
+var* MakeIntMatrix(Program *p, int pos, int value){
+   var* temp = (var*) ncalloc(1, sizeof(var));
+   temp->height = 1;
+   temp->height = p->variable[pos]->height;
+   temp->width = p->variable[pos]->width;
+   temp->num = (int**)n2dcalloc(p->variable[pos]->height, p->variable[pos]->width, sizeof(int*));
+   for(int j=0; j<p->variable[pos]->height; j++){ //row
+      for(int i=0; i<p->variable[pos]->width; i++){ //col
+         temp->num[j][i] += value;
+         // printf("word: %d\n", temp->num[j][i]);
+      }
+   }
+   return temp;
+}
+
+void FreeIntMatrix(var* temp){
+   n2dfree(temp->num, temp->height);
+   free(temp);
+}
+
 #endif
