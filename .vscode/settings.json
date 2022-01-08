@@ -8,6 +8,13 @@
         "general.c": "cpp",
         "nlab.h": "c",
         "strings.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "optional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "system_error": "c",
+        "functional": "c",
+        "tuple": "c",
+        "utility": "c"
     }
 }

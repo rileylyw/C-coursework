@@ -11,9 +11,9 @@ int main(int argc, char* argv[]){
    #ifdef INTERP
    // printf("%d\n", prog->variable[0]->num[0][0]);
    for(int i=0; i<CHARACTER; i++){
-      if(prog->variable[i] != NULL){
-         n2dfree(prog->variable[i]->num, prog->variable[i]->height); //TODO: matrix free
-         free(prog->variable[i]);
+      if(prog->variable[i].num != NULL){
+         n2dfree(prog->variable[i].num, prog->variable[i].height); //TODO: matrix free
+         // free(prog->variable[i]);
          // printf("INTERP OK\n");
       }
    }
