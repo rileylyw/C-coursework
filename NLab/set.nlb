@@ -1,7 +1,6 @@
 BEGIN {
-   ONES 6 5 $A
-   SET $A := $A 3 B-ADD ;
-
+   ONES 6 5 $B
+   SET $A := $B 3 B-ADD ;
+   PRINT "ARRAY:"
    PRINT $A
 }
-   PRINT "ARRAY:"

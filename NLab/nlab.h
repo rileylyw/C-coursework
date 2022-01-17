@@ -49,6 +49,7 @@ struct prog{
    char wds[MAXNUMTOKENS][MAXTOKENSIZE]; //instructions
    int cw; // Current Word
    var variable[CHARACTER];
+   int pos;
    stack* stack;
 };
 typedef struct prog Program;
@@ -74,14 +75,10 @@ bool Col(Program *p);
 bool FileName(Program *p);
 bool Loop(Program *p);
 void AssignValues(Program *p, int pos, int value);
-// void AssignValues(Program *p, int h, int w, int pos, int value);
 void AllocSpace(Program *p, int h, int w, int pos);
 stack* stack_init(void);
-void stack_push(stack* s, var d);
+void stack_push(stack* s, var* d);
 bool stack_free(stack* s);
 bool stack_pop(stack* s, var* temp);
-// bool stack_pop(stack* s, var d);
 var MakeIntMatrix(int num);
-void FreeIntMatrix(var temp);
-// var* MakeIntMatrix(Program *p, int pos, int value);
-// void FreeIntMatrix(var* temp);
+void FreeNum(var temp);
