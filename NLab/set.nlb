@@ -1,6 +1,7 @@
 BEGIN {
-   ONES 6 5 $B
-   SET $A := $B 3 B-ADD ;
+   ONES 3 5 $Z
+   SET $B := 2 ;
+   SET $A := $Z 5 B-ADD 2 B-TIMES 12 B-EQUALS ;
    PRINT "ARRAY:"
    PRINT $A
 }

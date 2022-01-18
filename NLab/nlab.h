@@ -50,6 +50,7 @@ struct prog{
    int cw; // Current Word
    var variable[CHARACTER];
    int pos;
+   int workingpos;
    stack* stack;
 };
 typedef struct prog Program;
@@ -81,4 +82,7 @@ void stack_push(stack* s, var* d);
 bool stack_free(stack* s);
 bool stack_pop(stack* s, var* temp);
 var MakeIntMatrix(int num);
-void FreeNum(var temp);
+// void FreeNum(var temp);
+void FreeNum(var temp1, var temp2, var temp3);
+void StackToVar(Program *p);
+// void StackToVar(Program *p, int pos);
