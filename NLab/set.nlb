@@ -1,7 +1,12 @@
 BEGIN {
    ONES 3 5 $Z
    SET $B := 2 ;
-   SET $A := $Z 5 B-ADD 2 B-TIMES 12 B-EQUALS ;
+   SET $A := $Z U-EIGHTCOUNT ;
    PRINT "ARRAY:"
-   PRINT $A
+   PRINT $Z
 }
+   
+   
+   
+   
+   2 B-TIMES 12 B-EQUALS ;
