@@ -66,7 +66,7 @@ bool Instrc(Program *p){
    }
    if(strsame(p->wds[p->cw], "SET")){
       p->cw = p->cw + 1;
-      p->pos = (int) p->wds[p->cw][1] - 'A'; //respective var ascii
+      p->pos = (int) p->wds[p->cw][1] - 'A'; //SET $A
       if(Set(p)){
          return true;
       }
@@ -292,6 +292,7 @@ bool BinaryOp(Program *p){
       return true;
    }
    else if(strsame(p->wds[p->cw], "B-OR")){
+      //TODO
       return true;
    }
    else if(strsame(p->wds[p->cw], "B-GREATER")){
@@ -332,7 +333,9 @@ bool BinaryOp(Program *p){
       // printf("p->variable[pos].height: %d\n", p->variable[pos].height);
       // printf("p->variable[pos].width: %d\n", p->variable[pos].width);
       if(strsame(p->wds[p->cw+1], ";")){
-         p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[0].height, p->stack->a[0].width, sizeof(int)); //TODO FREE
+         if(pos != p->pos){
+            p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[0].height, p->stack->a[0].width, sizeof(int)); //TODO FREE
+         }
          p->variable[p->pos].height = p->stack->a[0].height;
          p->variable[p->pos].width = p->stack->a[0].width;
          for(int j=0; j<p->stack->a[0].height; j++){ //row
