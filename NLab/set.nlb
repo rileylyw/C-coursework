@@ -1,12 +1,13 @@
 BEGIN {
-   ONES 3 5 $Z
+   ONES 2 3 $Z
    SET $B := 2 ;
-   SET $A := $Z U-EIGHTCOUNT ;
+   SET $A := $Z 3 B-ADD U-NOT ;
    PRINT "ARRAY:"
-   PRINT $Z
+   PRINT $A
 }
    
    
+   SET $A := 3 U-EIGHTCOUNT 2 B-ADD 6 B-AND 0 B-EQUALS ;
    
    
    2 B-TIMES 12 B-EQUALS ;

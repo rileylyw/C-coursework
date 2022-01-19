@@ -257,10 +257,9 @@ bool PushDown(Program *p){
             int value = atoi(p->wds[p->cw]);
             AllocSpace(p, 1, 1, p->pos);
             AssignValues(p, p->pos, value);
-            printf("%d\n", p->variable[p->pos].height);
             if(strsame(p->wds[p->cw+1], "U-NOT") || strsame(p->wds[p->cw+1], "U-EIGHTCOUNT")){
-               printf("%s\n", p->wds[p->cw+1]); //TODO: tbc
-               // printf("%d\n", p->variable[p->pos].height);
+               // printf("%s\n", p->wds[p->cw+1]); //TODO: tbc
+               // printf("num %d\n", p->variable[p->pos].num[0][0]);
                stack_push(p->stack, &p->variable[p->pos]);
             }
          }
@@ -316,23 +315,46 @@ bool UnaryOp(Program *p){
       #ifdef INTERP
       var tempvar1;
       stack_pop(p->stack, &tempvar1);
-      //TODO***: set boundary
-      for(int j=0; j<tempvar1.height; j++){ //row
-         for(int i=0; i<tempvar1.width; i++){ //col
+      var tempvar_bound;
+      tempvar_bound.height = tempvar1.height + 2;
+      tempvar_bound.width = tempvar1.width + 2;
+      tempvar_bound.num = (int**)n2dcalloc(tempvar_bound.height, tempvar_bound.width, sizeof(int));
+      for(int j=0; j<tempvar_bound.height; j++){ //row
+         for(int i=0; i<tempvar_bound.width; i++){ //col
+            if(j==0 || i==0 || j==tempvar_bound.height-1 || i==tempvar_bound.width -1){
+               tempvar_bound.num[j][i] = 0;
+            }
+         }
+      }
+      for(int j=1; j<tempvar_bound.height-1; j++){
+         for(int i=1; i<tempvar_bound.width-1; i++){
+            tempvar_bound.num[j][i] = tempvar1.num[j-1][i-1];
+         }
+      }
+      for(int j=1; j<tempvar_bound.height-1; j++){ //row
+         for(int i=1; i<tempvar_bound.width-1; i++){ //col
             int count = 0;
             for(int y=-1; y<=1; y++){
-                  for(int x=-1; x<=1; x++){
-                     if(tempvar1.num[y][x] > 0){
-                        count++;
-                     }
+               for(int x=-1; x<=1; x++){
+                  if(tempvar_bound.num[j+y][i+x] > 0){
+                     count++;
                   }
                }
             }
-            tempvar1.num[j][i] = count;
+            tempvar1.num[j-1][i-1] = count;
          }
       }
       stack_push(p->stack, &tempvar1);
-      StackToVar_working(p);
+      p->cw = p->cw - 1;
+      if(Integer(p)){
+         p->cw = p->cw + 1;
+         p->workingpos = p->pos;
+      }
+      else{
+         p->cw = p->cw + 1;
+         StackToVar_working(p);
+      }
+      n2dfree(tempvar_bound.num, tempvar_bound.height);
       n2dfree(tempvar1.num, tempvar1.height);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
@@ -719,7 +741,7 @@ void FreeNum(var temp1, var temp2, var temp3){
 }
 
 void StackToVar(Program *p){
-   if(p->workingpos != p->pos){
+   if(p->workingpos != p->pos && p->workingpos >= 0){
       p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[0].height, p->stack->a[0].width, sizeof(int)); //TODO FREE
    }
    p->variable[p->pos].height = p->stack->a[0].height;
