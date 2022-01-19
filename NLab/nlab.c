@@ -129,6 +129,7 @@ bool Print(Program *p){
 }
 
 bool Varname(Program *p){
+   p->workingpos = (int) p->wds[p->cw][1] - 'A';
    int len = strlen(p->wds[p->cw]);
    if(len != 2){
       return false;
@@ -272,7 +273,7 @@ bool PushDown(Program *p){
             int value = atoi(p->wds[p->cw]);
             AllocSpace(p, 1, 1, p->pos);
             AssignValues(p, p->pos, value);
-            if(strsame(p->wds[p->cw+1], "U-NOT") || strsame(p->wds[p->cw+1], "U-EIGHTCOUNT") || strsame(p->wds[p->cw+1], ";")){
+            if(strsame(p->wds[p->cw+1], "U-NOT") || strsame(p->wds[p->cw+1], "U-EIGHTCOUNT")){
                // printf("%s\n", p->wds[p->cw+1]); //TODO: tbc
                // printf("num %d\n", p->variable[p->pos].num[0][0]);
                stack_push(p->stack, &p->variable[p->pos]);
@@ -280,7 +281,7 @@ bool PushDown(Program *p){
          }
       }
       else{
-         printf("p->pos %d\n", p->pos);
+         // printf("p->pos %d\n", p->pos);
          p->cw = p->cw + 2 + 1; // ... B-ADD 2 *B-TIMES*
          return false;
       }
@@ -385,33 +386,50 @@ bool BinaryOp(Program *p){
    if(strsame(p->wds[p->cw], "B-AND")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         // printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            tempvar2.num[j][i] &= tempvar1.num[0][0];
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] &= tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] &= tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
+         // printf("here %d\n", p->pos);
+         // printf("%d\n", p->variable[p->pos].height);
          StackToVar(p);
       }
       #endif
@@ -420,31 +438,46 @@ bool BinaryOp(Program *p){
    else if(strsame(p->wds[p->cw], "B-OR")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         // printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            tempvar2.num[j][i] |= tempvar1.num[0][0];
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] |= tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] |= tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
@@ -455,31 +488,46 @@ bool BinaryOp(Program *p){
    else if(strsame(p->wds[p->cw], "B-GREATER")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         // printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            tempvar2.num[j][i] = tempvar2.num[j][i] > tempvar1.num[0][0];
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] = tempvar2.num[j][i] > tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] = tempvar2.num[j][i] > tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
@@ -490,31 +538,46 @@ bool BinaryOp(Program *p){
    else if(strsame(p->wds[p->cw], "B-LESS")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         // printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            tempvar2.num[j][i] = tempvar2.num[j][i] < tempvar1.num[0][0];
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] = tempvar2.num[j][i] < tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] = tempvar2.num[j][i] < tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
@@ -525,69 +588,96 @@ bool BinaryOp(Program *p){
    else if(strsame(p->wds[p->cw], "B-ADD")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            printf("1tempvar2.num[j][i] %d\n", tempvar2.num[j][i]);
-            tempvar2.num[j][i] += tempvar1.num[0][0];
-            printf("tempvar2.num[j][i] %d\n", tempvar2.num[j][i]);
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] += tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] += tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
       }
-      
       #endif
       return true;
    }
    else if(strsame(p->wds[p->cw], "B-TIMES")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         // printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            tempvar2.num[j][i] *= tempvar1.num[0][0];
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] *= tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] *= tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
@@ -598,31 +688,46 @@ bool BinaryOp(Program *p){
    else if(strsame(p->wds[p->cw], "B-EQUALS")){
       #ifdef INTERP
       p->cw = p->cw - 2;
-      if(Varname(p)){
-         p->cw = p->cw + 1;
+      if(!Push(p)){
+         p->cw = p->cw - 1;
+         // printf("here %s\n", p->wds[p->cw]);
          if(Varname(p)){
+            stack_push(p->stack, &p->variable[p->workingpos]);
+            p->cw = p->cw + 1;
+         }
+         else if(Integer(p)){
+            int value = atoi(p->wds[p->cw]);
+            // printf("%d", value);
+            var temp = MakeIntMatrix(value);
+            stack_push(p->stack, &temp);
+            n2dfree(temp.num, temp.height);
             p->cw = p->cw + 1;
          }
          else{
             p->cw = p->cw + 1;
-            p->workingpos = (int) p->wds[p->cw-2][1] - 'A'; //respective var ascii
-            stack_push(p->stack, &p->variable[p->workingpos]);
-            int value = atoi(p->wds[p->cw-1]);
-            var temp = MakeIntMatrix(value);
-            stack_push(p->stack, &temp);
-            n2dfree(temp.num, temp.height);
          }
       }
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
-      for(int j=0; j<tempvar2.height; j++){ //row
-         for(int i=0; i<tempvar2.width; i++){ //col
-            tempvar2.num[j][i] = tempvar2.num[j][i] == tempvar1.num[0][0];
+      p->cw = p->cw - 1;
+      if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] = tempvar2.num[j][i] == tempvar1.num[0][0];
+            }
          }
+         p->cw = p->cw + 1;
+      }
+      else if (Varname(p)){
+         for(int j=0; j<tempvar2.height; j++){ //row
+            for(int i=0; i<tempvar2.width; i++){ //col
+               tempvar2.num[j][i] = tempvar2.num[j][i] == tempvar1.num[j][i];
+            }
+         }
+         p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      StackToVar_working(p);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
@@ -820,9 +925,9 @@ void FreeNum(var temp1, var temp2){
 }
 
 void StackToVar(Program *p){
-   if(p->workingpos != p->pos && p->workingpos >= 0){
+   // if(p->workingpos != p->pos && p->workingpos >= 0){
       p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[p->stack->size-1].height, p->stack->a[p->stack->size-1].width, sizeof(int)); //TODO FREE
-   }
+   // }
    p->variable[p->pos].height = p->stack->a[p->stack->size-1].height;
    p->variable[p->pos].width = p->stack->a[p->stack->size-1].width;
    for(int j=0; j<p->stack->a[p->stack->size-1].height; j++){ //row
@@ -839,5 +944,56 @@ void StackToVar_working(Program *p){
       }
    }
 }
+
+bool Push(Program *p){
+   // p->cw = p->cw - 2;
+   if(Varname(p)){
+      p->cw = p->cw + 1;
+      if(Varname(p)){
+         p->workingpos = (int) p->wds[p->cw-1][1] - 'A';
+         stack_push(p->stack, &p->variable[p->workingpos]);
+         p->workingpos = (int) p->wds[p->cw][1] - 'A';
+         stack_push(p->stack, &p->variable[p->workingpos]);
+         p->cw = p->cw + 1;
+         return true;
+      }
+      else if(Integer(p)){
+         int value = atoi(p->wds[p->cw]);
+         var temp = MakeIntMatrix(value);
+         stack_push(p->stack, &temp);
+         n2dfree(temp.num, temp.height);
+         p->cw = p->cw + 1;
+         return true;
+      }
+      return false;
+   }
+   else if(Integer(p)){
+      int value = atoi(p->wds[p->cw]);
+      var temp = MakeIntMatrix(value);
+      stack_push(p->stack, &temp);
+      n2dfree(temp.num, temp.height);
+      p->cw = p->cw + 1;
+      if(Integer(p)){
+         int value1 = atoi(p->wds[p->cw]);
+         var temp1 = MakeIntMatrix(value1);
+         stack_push(p->stack, &temp1);
+         n2dfree(temp.num, temp.height);
+         p->cw = p->cw + 1;
+         return true;
+      }
+      else if(Varname(p)){
+         stack_push(p->stack, &p->variable[p->workingpos]);
+         p->cw = p->cw + 1;
+         return true;
+      }
+      return false;
+   }
+   else{
+      p->cw = p->cw + 2;
+   }
+   return false;
+}
+
+
 
 #endif

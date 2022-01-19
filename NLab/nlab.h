@@ -87,3 +87,4 @@ void FreeNum(var temp1, var temp2);
 void StackToVar(Program *p);
 void StackToVar_working(Program *p);
 // void StackToVar(Program *p, int pos);
+bool Push(Program *p);
