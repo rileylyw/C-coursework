@@ -46,12 +46,21 @@ bool Prog(Program *p){
 
 bool InstrcList(Program *p){
    if(strsame(p->wds[p->cw], "}")){
+      // p->variable[p->looppos].num[0][0] += 1;
+      // printf("here %d\n", p->variable[p->looppos].num[0][0]);
+      // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+      if(p->variable[p->looppos].num[0][0]<=p->maxloop){
+         p->cw = p->loopstart; //TODO
+         InstrcList(p);
+         printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+      }
       return true;
    }
    if(!Instrc(p)){
       ERROR("Instuclist error");
    }
    p->cw = p->cw + 1;
+   printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
    InstrcList(p);
    return true;
 }
@@ -80,6 +89,7 @@ bool Instrc(Program *p){
       ERROR("CREATE error");
    }
    if(strsame(p->wds[p->cw], "LOOP")){
+      p->loopstart = p->cw;
       p->cw = p->cw + 1;
       if(Loop(p)){
          return true;
@@ -813,11 +823,24 @@ bool Loop(Program *p){
    if(!Integer(p)){
       ERROR("Integer error");
    }
+   p->looppos = (int) p->wds[p->cw-1][1] - 'A';
+   // printf("%d\n", p->pos);
+   p->maxloop = atoi(p->wds[p->cw]); //10
+   p->variable[p->looppos] = MakeIntMatrix(0); //TODO
+   // printf("num %d\n", p->variable[p->pos].num[0][0]);
+
    p->cw = p->cw + 1;
    if(!strsame(p->wds[p->cw], "{")){
       ERROR("Missing {");
    }
    p->cw = p->cw + 1;
+
+   // int count = 1;
+   // while(count <= p->variable[p->looppos].num[0][0]){
+   //    InstrcList(p);
+   // }
+   // count++;
+   p->variable[p->looppos].num[0][0] += 1; //TODO
    InstrcList(p);
    return true;
 }

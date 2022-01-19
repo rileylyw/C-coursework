@@ -1,9 +1,14 @@
 BEGIN {
-   READ "lglider.arr" $A
-   SET $B := $A U-NOT 2 B-ADD ;
-   PRINT $B
-
+      ONES 3 4 $A
+      SET $B := $A U-EIGHTCOUNT ;
+      SET $C := $B 2 B-EQUALS 3 B-OR $A B-AND ;
+      PRINT $C
 }
+
+      SET $E := $A U-NOT $D B-AND $C B-OR ;
+
 
    SET $C := $A 10 B-AND ;
    PRINT $C
+
+   SET $B := $A U-NOT 2 B-ADD ;
