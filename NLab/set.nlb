@@ -1,13 +1,26 @@
 BEGIN {
-   ONES 2 3 $Z
-   SET $B := 2 ;
-   SET $A := $Z 3 B-ADD U-NOT ;
-   PRINT "ARRAY:"
+   READ "lglider.arr" $A
+   SET $B := $A 2 B-ADD ;
    PRINT $A
 }
-   
-   
-   SET $A := 3 U-EIGHTCOUNT 2 B-ADD 6 B-AND 0 B-EQUALS ;
-   
-   
-   2 B-TIMES 12 B-EQUALS ;
+
+   SET $E := $A 5 B-ADD ;
+   PRINT $E
+
+
+READ "lglider.arr" $A
+LOOP $I 10 {
+
+   SET $B := $A U-EIGHTCOUNT ;
+   SET $D := $B 3 B-EQUALS ;
+   SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ;
+   SET $E := $A U-NOT $D B-AND $C B-OR ;
+
+   PRINT $I
+   PRINT $E
+   SET $A := 5 ;
+   SET $B := 5 ;
+   SET $C := 5 ;
+   SET $B := $A $C B-ADD ;
+   SET $B := $A 2 B-ADD U-EIGHTCOUNT ;
+}
