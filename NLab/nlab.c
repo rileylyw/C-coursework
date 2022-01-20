@@ -232,7 +232,7 @@ bool Set(Program *p){
    p->cw = p->cw + 1;
    if(Varname(p)){
       if(strsame(p->wds[p->cw+1], ";")){
-         // printf("pos %d\n", p->workingpos);
+         printf("pos %d\n", p->workingpos);
          stack_push(p->stack, &p->variable[p->workingpos]);
       }
    }
@@ -371,6 +371,7 @@ bool UnaryOp(Program *p){
    }
    else if(strsame(p->wds[p->cw], "U-EIGHTCOUNT")){
       #ifdef INTERP
+      printf("ap->stack->size %d\n", p->stack->size); //todo
       var tempvar1;
       stack_pop(p->stack, &tempvar1);
       var tempvar_bound;
@@ -782,7 +783,7 @@ bool BinaryOp(Program *p){
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
-         // printf("TEST");
+         printf("TEST");
          // // for(int i=0; i<p->stack->capacity; i++){
          // //    n2dfree(p->stack->a[i].num, p->stack->a[i].height);
          // // }
