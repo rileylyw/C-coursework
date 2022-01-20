@@ -46,19 +46,33 @@ bool Prog(Program *p){
 
 bool InstrcList(Program *p){
    if(strsame(p->wds[p->cw], "}")){
-      p->variable[p->looppos].num[0][0] += 1;
+      // var tempvar1;
+      // stack_pop(p->stack, &tempvar1);
+
+      // p->variable[p->looppos].num[0][0] += 1;
+      // printf("size %d\n", p->stack->a[1].loopstart);
       // printf("here %d\n", p->loopstart);
       // printf("here %d\n", p->variable[p->looppos].num[0][0]);
       // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
-      if(p->variable[p->looppos].num[0][0]<=p->maxloop){
-         p->cw = p->loopstart; //TODO
-         InstrcList(p);
-         // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
-      }
+      // if(p->variable[p->looppos].num[0][0]<=p->maxloop){
+      
+      // if(p->variable[p->looppos].loopcount<=p->variable[p->looppos].maxloop){
+      //    p->cw = p->variable[p->looppos].loopstart; //TODO
+      //    // printf("here %d\n", p->variable[p->looppos].loopcount);
+      //    p->variable[p->looppos].loopcount++;
+      //    printf("here %d\n", p->looppos);
+      //    // printf("here %d\n", p->variable[p->looppos].loopcount);
+      //    // stack_push(p->stack, &tempvar1);
+      //    // n2dfree(tempvar1.num, tempvar1.height);
+      //    InstrcList(p);
+      //    // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+      // }
+
       return true;
    }
    if(!Instrc(p)){
-      ERROR("Instuclist error");
+      return false;
+      // ERROR("Instuclist error");
    }
    p->cw = p->cw + 1;
    // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
@@ -90,23 +104,14 @@ bool Instrc(Program *p){
       ERROR("CREATE error");
    }
    if(strsame(p->wds[p->cw], "LOOP")){
-      printf("maxloop %d\n", p->maxloop);
-      if(p->maxloop==0){
-         // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
-         p->loopstart = p->cw;
-         if(((p->wds[p->cw+1][1]-'A')>=0 && ((p->wds[p->cw+1][1]-'A')<26))){
-            p->looppos = (int) p->wds[p->cw+1][1] - 'A';
-            p->variable[p->looppos] = MakeIntMatrix(1); //init $I=1
-            // printf("%d\n", p->variable[p->looppos].num[0][0]);
-         }
-      }
       p->cw = p->cw + 1;
       if(Loop(p)){
          return true;
       };
       ERROR("LOOP error");
    }
-   ERROR("Wrong instruction");
+   // ERROR("Wrong instruction");
+   return false;
 }
 
 bool Print(Program *p){
@@ -225,6 +230,12 @@ bool Set(Program *p){
       ERROR("Incorrect operator");
    }
    p->cw = p->cw + 1;
+   if(Varname(p)){
+      if(strsame(p->wds[p->cw+1], ";")){
+         // printf("pos %d\n", p->workingpos);
+         stack_push(p->stack, &p->variable[p->workingpos]);
+      }
+   }
    if(PolishList(p)){
       return true;
    }
@@ -279,6 +290,16 @@ bool PushDown(Program *p){
       }
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+      // printf("ap->stack->size %d\n", p->stack->size);
+         // p->stack->size = 0; //TBC
+         printf("here %d\n", p->variable[1].num[3][3]);
+         printf("pos %d\n", p->pos);
+         // printf("here %d\n", p->variable[3].num[3][3]);
+         printf("TEST");
+         // for(int i=0; i<p->stack->capacity; i++){
+         //    n2dfree(p->stack->a[i].num, p->stack->a[i].height);
+         // }
+         // p->stack->size = 0;
       }
       return true;
    }
@@ -395,6 +416,11 @@ bool UnaryOp(Program *p){
       n2dfree(tempvar1.num, tempvar1.height);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         // printf("TEST");
+         // for(int i=0; i<p->stack->capacity; i++){
+         //    n2dfree(p->stack->a[i].num, p->stack->a[i].height);
+         // }
+         p->stack->size = 0;
       }
       #endif
       return true;
@@ -406,6 +432,7 @@ bool UnaryOp(Program *p){
 bool BinaryOp(Program *p){
    if(strsame(p->wds[p->cw], "B-AND")){
       #ifdef INTERP
+      printf("p->stack->size %d\n", p->stack->size);
       p->cw = p->cw - 2;
       if(!Push(p)){
          p->cw = p->cw - 1;
@@ -458,6 +485,7 @@ bool BinaryOp(Program *p){
    }
    else if(strsame(p->wds[p->cw], "B-OR")){
       #ifdef INTERP
+      // printf("p->stack->size %d\n", p->stack->size);
       p->cw = p->cw - 2;
       if(!Push(p)){
          p->cw = p->cw - 1;
@@ -483,6 +511,7 @@ bool BinaryOp(Program *p){
       stack_pop(p->stack, &tempvar2);
       p->cw = p->cw - 1;
       if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         // printf("working pos %d\n", p->workingpos);
          for(int j=0; j<tempvar2.height; j++){ //row
             for(int i=0; i<tempvar2.width; i++){ //col
                tempvar2.num[j][i] |= tempvar1.num[0][0];
@@ -501,6 +530,7 @@ bool BinaryOp(Program *p){
       stack_push(p->stack, &tempvar2);
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
+         // printf("pos %d\n", p->pos);
          StackToVar(p);
       }
       #endif
@@ -752,6 +782,11 @@ bool BinaryOp(Program *p){
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         // printf("TEST");
+         // // for(int i=0; i<p->stack->capacity; i++){
+         // //    n2dfree(p->stack->a[i].num, p->stack->a[i].height);
+         // // }
+         // p->stack->size = 0;
       }
       #endif
       return true;
@@ -834,14 +869,38 @@ bool Loop(Program *p){
    if(!Integer(p)){
       ERROR("Integer error");
    }
-   p->looppos = (int) p->wds[p->cw-1][1] - 'A';
-   p->maxloop = atoi(p->wds[p->cw]); //10
+   // p->looppos = (int) p->wds[p->cw-1][1] - 'A';
+   // p->variable[p->looppos].maxloop = atoi(p->wds[p->cw]); //10
    // p->variable[p->looppos] = MakeIntMatrix(0); //TODO
    // printf("num %d\n", p->variable[p->pos].num[0][0]);
 
    p->cw = p->cw + 1;
    if(!strsame(p->wds[p->cw], "{")){
       ERROR("Missing {");
+   }
+   if(strsame(p->wds[p->cw], "{")){
+      int ptr = 1;
+      p->looppos = (int) p->wds[p->cw-2][1] - 'A';
+      // int x = atoi(p->wds[p->cw-1]);
+      // p->variable[p->looppos] = MakeIntMatrix(1); //init $I=1
+      // p->variable[p->looppos].loopstart = p->cw + 1; //PRINT
+      p->variable[p->looppos].loopcount = 1;
+      // p->variable[p->looppos].maxloop = atoi(p->wds[p->cw-1]); //10
+      int temp = p->cw + 1;
+      int maxloop = atoi(p->wds[p->cw-1]);
+      // while(ptr <= x){
+      while(ptr <= maxloop){
+      // while(ptr <= p->variable[p->looppos].maxloop){
+         // printf("p->wds[p->cw] %s\n", p->wds[temp]);
+         p->cw = temp;
+         // p->cw = p->variable[p->looppos].loopstart;
+         if(InstrcList(p)){
+            ptr++;
+         }
+         // printf("POS %d\n",p->looppos);
+         // printf("maxxloop %d\n", p->variable[p->looppos].maxloop);
+         // ptr++;
+      }
    }
    p->cw = p->cw + 1;
    // p->variable[p->looppos].num[0][0] += 1; //TODO
@@ -896,6 +955,9 @@ void stack_push(stack* s, var* d)
    }
    s->a[s->size].height = d->height;
    s->a[s->size].width = d->width;
+   // s->a[s->size].loopstart = d->loopstart; //TBC
+   // s->a[s->size].loopcount = d->loopcount;
+   // s->a[s->size].maxloop = d->maxloop;
    for(int j=0; j<d->height; j++){ //row
       for(int i=0; i<d->width; i++){ //col
          s->a[s->size].num[j][i] = d->num[j][i];
@@ -913,6 +975,11 @@ bool stack_pop(stack* s, var* temp)
    s->size = s->size - 1;
    temp->height = s->a[s->size].height;
    temp->width = s->a[s->size].width;
+   // temp->loopstart = s->a[s->size].loopstart;
+   // temp->loopcount = s->a[s->size].loopcount;
+   // temp->maxloop = s->a[s->size].maxloop;
+
+   
    temp->num = (int**)n2dcalloc(temp->height, temp->width, sizeof(int));
    for(int j=0; j<temp->height; j++){ //row
       for(int i=0; i<temp->width; i++){ //col
@@ -952,9 +1019,11 @@ void FreeNum(var temp1, var temp2){
 }
 
 void StackToVar(Program *p){
+   if(p->variable[p->pos].num==NULL){
+   // if(p->variable[p->pos].height==0){
    // if(p->workingpos != p->pos && p->workingpos >= 0){
       p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[p->stack->size-1].height, p->stack->a[p->stack->size-1].width, sizeof(int));
-   // }
+   }
    p->variable[p->pos].height = p->stack->a[p->stack->size-1].height;
    p->variable[p->pos].width = p->stack->a[p->stack->size-1].width;
    for(int j=0; j<p->stack->a[p->stack->size-1].height; j++){ //row
@@ -985,6 +1054,8 @@ bool Push(Program *p){
          return true;
       }
       else if(Integer(p)){
+         p->workingpos = (int) p->wds[p->cw-1][1] - 'A'; //TBC
+         stack_push(p->stack, &p->variable[p->workingpos]);
          int value = atoi(p->wds[p->cw]);
          var temp = MakeIntMatrix(value);
          stack_push(p->stack, &temp);
@@ -1017,26 +1088,27 @@ bool Push(Program *p){
    }
    else{
       p->cw = p->cw + 2;
+      return false;
    }
    return false;
 }
 
 bool stack_clear(stack* s) //TODO: clear stack after ";", }} stop, nested loop
 {
-   if((s == NULL) || (s->size < 1)){
-      return false;
-   }
-   s->size = 0;
-   s->a[s->size].height = 0;
-   s->a[s->size].width = 0;
-   // temp->num = (int**)n2dcalloc(temp->height, temp->width, sizeof(int));
-   for(int j=0; j<temp->height; j++){ //row
-      for(int i=0; i<temp->width; i++){ //col
-         temp->num[j][i] = s->a[s->size].num[j][i];
-         // printf("word: %d\n", temp->num[j][i]);
-      }
-   }
-   return true;
+   // if((s == NULL) || (s->size < 1)){
+   //    return false;
+   // }
+   // s->size = 0;
+   // s->a[s->size].height = 0;
+   // s->a[s->size].width = 0;
+   // // temp->num = (int**)n2dcalloc(temp->height, temp->width, sizeof(int));
+   // for(int j=0; j<temp->height; j++){ //row
+   //    for(int i=0; i<temp->width; i++){ //col
+   //       temp->num[j][i] = s->a[s->size].num[j][i];
+   //       // printf("word: %d\n", temp->num[j][i]);
+   //    }
+   // }
+   // return true;
 }
 
 #endif

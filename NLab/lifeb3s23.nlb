@@ -1,5 +1,13 @@
 BEGIN {
-   LOOP $I 10 {
-      PRINT "TEST"
+
+   READ "lglider.arr" $A
+   LOOP $J 2 {
+      PRINT "PRINTING"
+      LOOP $I 3 {
+         SET $B := $A U-EIGHTCOUNT ;
+         SET $D := $B ;
+         PRINT $B
+      }
    }
 }
+

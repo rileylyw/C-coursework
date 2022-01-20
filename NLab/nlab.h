@@ -33,7 +33,9 @@ struct var{
    int** num; //n2dcalloc
    int height;
    int width;
-   // int size; //size of respective stack
+   int loopstart;
+   int maxloop;
+   int loopcount;
 };
 typedef struct var var;
 
@@ -52,8 +54,7 @@ struct prog{
    int pos;
    int workingpos;
    int looppos;
-   int loopstart;
-   int maxloop;
+
    stack* stack;
 };
 typedef struct prog Program;

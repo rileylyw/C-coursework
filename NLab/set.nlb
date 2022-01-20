@@ -1,26 +1,6 @@
 BEGIN {
-      ONES 3 4 $A
+      SET $A := 1 2 B-ADD ;
+      SET $A := 1 2 B-ADD ;
       PRINT $A
+      PRINT "TEST"
 }
-
-      SET $E := $A U-NOT $D B-AND $C B-OR ;
-
-
-   SET $C := $A 10 B-AND ;
-   PRINT $C
-
-   SET $B := $A U-NOT 2 B-ADD ;
-
-
-
-      SET $E := 5 ;
-      PRINT $E
-
-      SET $B := $A U-EIGHTCOUNT ;
-      SET $D := $B 3 B-EQUALS ;
-      SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ;
-      SET $E := $A U-NOT $D B-AND $C B-OR ;
-
-      PRINT $I
-      PRINT $E
-      SET $A := $E ;
