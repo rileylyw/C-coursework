@@ -226,16 +226,17 @@ bool Set(Program *p){
       ERROR("Wrong varname");
    }
    p->cw = p->cw + 1;
+      // printf("here p->stack->size %d\n", p->stack->size); //todo
    if(!strsame(p->wds[p->cw], ":=")){
       ERROR("Incorrect operator");
    }
    p->cw = p->cw + 1;
-   if(Varname(p)){
-      if(strsame(p->wds[p->cw+1], ";")){
-         printf("pos %d\n", p->workingpos);
-         stack_push(p->stack, &p->variable[p->workingpos]);
-      }
-   }
+   // if(Varname(p)){
+   //    if(strsame(p->wds[p->cw+1], ";")){
+   //       printf("pos %d\n", p->workingpos);
+   //       stack_push(p->stack, &p->variable[p->workingpos]);
+   //    }
+   // }
    if(PolishList(p)){
       return true;
    }
@@ -289,7 +290,9 @@ bool PushDown(Program *p){
          stack_push(p->stack, &p->variable[p->workingpos]);
       }
       if(strsame(p->wds[p->cw+1], ";")){
+         stack_push(p->stack, &p->variable[p->workingpos]);
          StackToVar(p);
+         p->stack->size = 0;
       // printf("ap->stack->size %d\n", p->stack->size);
          // p->stack->size = 0; //TBC
          printf("here %d\n", p->variable[1].num[3][3]);
@@ -361,17 +364,18 @@ bool UnaryOp(Program *p){
          }
       }
       stack_push(p->stack, &tempvar1);
-      StackToVar_working(p);
+      // StackToVar_working(p);
       n2dfree(tempvar1.num, tempvar1.height);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
    }
    else if(strsame(p->wds[p->cw], "U-EIGHTCOUNT")){
       #ifdef INTERP
-      printf("ap->stack->size %d\n", p->stack->size); //todo
+      // printf("ap->stack->size %d\n", p->stack->size); //todo
       var tempvar1;
       stack_pop(p->stack, &tempvar1);
       var tempvar_bound;
@@ -411,7 +415,7 @@ bool UnaryOp(Program *p){
       }
       else{
          p->cw = p->cw + 1;
-         StackToVar_working(p);
+         // StackToVar_working(p);
       }
       n2dfree(tempvar_bound.num, tempvar_bound.height);
       n2dfree(tempvar1.num, tempvar1.height);
@@ -480,6 +484,7 @@ bool BinaryOp(Program *p){
          // printf("here %d\n", p->pos);
          // printf("%d\n", p->variable[p->pos].height);
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
@@ -491,8 +496,11 @@ bool BinaryOp(Program *p){
       if(!Push(p)){
          p->cw = p->cw - 1;
          // printf("here %s\n", p->wds[p->cw]);
+         // printf("here %d\n", p->workingpos);
          if(Varname(p)){
+            // printf("here %d\n", p->workingpos);
             stack_push(p->stack, &p->variable[p->workingpos]);
+         // printf("working pos %d\n", p->workingpos);
             p->cw = p->cw + 1;
          }
          else if(Integer(p)){
@@ -521,6 +529,7 @@ bool BinaryOp(Program *p){
          p->cw = p->cw + 1;
       }
       else if (Varname(p)){
+         printf("working pos %d\n", p->workingpos);
          for(int j=0; j<tempvar2.height; j++){ //row
             for(int i=0; i<tempvar2.width; i++){ //col
                tempvar2.num[j][i] |= tempvar1.num[j][i];
@@ -533,6 +542,7 @@ bool BinaryOp(Program *p){
       if(strsame(p->wds[p->cw+1], ";")){
          // printf("pos %d\n", p->pos);
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
@@ -583,6 +593,7 @@ bool BinaryOp(Program *p){
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
@@ -633,6 +644,7 @@ bool BinaryOp(Program *p){
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
@@ -683,6 +695,7 @@ bool BinaryOp(Program *p){
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
@@ -733,12 +746,14 @@ bool BinaryOp(Program *p){
       FreeNum(tempvar1, tempvar2);
       if(strsame(p->wds[p->cw+1], ";")){
          StackToVar(p);
+         p->stack->size = 0;
       }
       #endif
       return true;
    }
    else if(strsame(p->wds[p->cw], "B-EQUALS")){
       #ifdef INTERP
+      // printf("ap->stack->size %d\n", p->stack->size); //todo
       p->cw = p->cw - 2;
       if(!Push(p)){
          p->cw = p->cw - 1;
@@ -762,11 +777,15 @@ bool BinaryOp(Program *p){
       var tempvar1, tempvar2;
       stack_pop(p->stack, &tempvar1);
       stack_pop(p->stack, &tempvar2);
+      //    printf("here %s\n", p->wds[p->cw]);
+      // printf("ap->stack->size %d\n", p->stack->size); //todo
       p->cw = p->cw - 1;
       if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+         // printf("here %s\n", p->wds[p->cw]);
          for(int j=0; j<tempvar2.height; j++){ //row
             for(int i=0; i<tempvar2.width; i++){ //col
                tempvar2.num[j][i] = tempvar2.num[j][i] == tempvar1.num[0][0];
+               // printf("tempvar2.num[j][i] %d\n", tempvar1.num[0][0]); //todo
             }
          }
          p->cw = p->cw + 1;
@@ -780,15 +799,18 @@ bool BinaryOp(Program *p){
          p->cw = p->cw + 1;
       }
       stack_push(p->stack, &tempvar2);
-      FreeNum(tempvar1, tempvar2);
+      // printf("tempvar2.num[j][i] %d\n", tempvar2.num[3][0]); //todo
       if(strsame(p->wds[p->cw+1], ";")){
+         // printf("here %d\n", p->stack->a[p->stack->size-1].height);
+         // printf("here %d\n", p->stack->size);
+         // printf("here %s\n", p->wds[p->cw]);
          StackToVar(p);
-         printf("TEST");
          // // for(int i=0; i<p->stack->capacity; i++){
          // //    n2dfree(p->stack->a[i].num, p->stack->a[i].height);
          // // }
-         // p->stack->size = 0;
+         p->stack->size = 0;
       }
+      FreeNum(tempvar1, tempvar2);
       #endif
       return true;
    }
@@ -951,7 +973,13 @@ void stack_push(stack* s, var* d)
             sizeof(var)*s->capacity*SCALEFACTOR);
       s->capacity = s->capacity*SCALEFACTOR;
    }
-   if(s->a[s->size].height == 0){
+
+   if(s->a[s->size].num==NULL){
+   // if(s->a[s->size].height == 0){
+      s->a[s->size].num = (int**)n2dcalloc(d->height, d->width, sizeof(int));
+   }
+   else if(s->a[s->size].height!=d->height || s->a[s->size].width!=d->width){
+      n2dfree(s->a[s->size].num, s->a[s->size].height);
       s->a[s->size].num = (int**)n2dcalloc(d->height, d->width, sizeof(int));
    }
    s->a[s->size].height = d->height;
@@ -1030,7 +1058,9 @@ void StackToVar(Program *p){
    for(int j=0; j<p->stack->a[p->stack->size-1].height; j++){ //row
       for(int i=0; i<p->stack->a[p->stack->size-1].width; i++){ //col
          p->variable[p->pos].num[j][i] = p->stack->a[p->stack->size-1].num[j][i];
+         // printf("p->variable[p->pos].num[j][i] %d\n", p->variable[p->pos].num[j][i]);
       }
+         // printf("\n");
    }
 }
 

@@ -4,6 +4,10 @@ BEGIN {
    LOOP $I 10 {
 
       SET $B := $A U-EIGHTCOUNT ;
-//todo
+      SET $D := $B 3 B-EQUALS ;
+      SET $E := $A U-NOT $D B-AND $C B-OR ;
+
+      PRINT $I
+
    }
 }
