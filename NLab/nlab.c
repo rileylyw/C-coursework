@@ -46,13 +46,14 @@ bool Prog(Program *p){
 
 bool InstrcList(Program *p){
    if(strsame(p->wds[p->cw], "}")){
-      // p->variable[p->looppos].num[0][0] += 1;
+      p->variable[p->looppos].num[0][0] += 1;
+      // printf("here %d\n", p->loopstart);
       // printf("here %d\n", p->variable[p->looppos].num[0][0]);
       // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
       if(p->variable[p->looppos].num[0][0]<=p->maxloop){
          p->cw = p->loopstart; //TODO
          InstrcList(p);
-         printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+         // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
       }
       return true;
    }
@@ -60,7 +61,7 @@ bool InstrcList(Program *p){
       ERROR("Instuclist error");
    }
    p->cw = p->cw + 1;
-   printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+   // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
    InstrcList(p);
    return true;
 }
@@ -89,7 +90,16 @@ bool Instrc(Program *p){
       ERROR("CREATE error");
    }
    if(strsame(p->wds[p->cw], "LOOP")){
-      p->loopstart = p->cw;
+      printf("maxloop %d\n", p->maxloop);
+      if(p->maxloop==0){
+         // printf("p->wds[p->cw] %s\n", p->wds[p->cw]);
+         p->loopstart = p->cw;
+         if(((p->wds[p->cw+1][1]-'A')>=0 && ((p->wds[p->cw+1][1]-'A')<26))){
+            p->looppos = (int) p->wds[p->cw+1][1] - 'A';
+            p->variable[p->looppos] = MakeIntMatrix(1); //init $I=1
+            // printf("%d\n", p->variable[p->looppos].num[0][0]);
+         }
+      }
       p->cw = p->cw + 1;
       if(Loop(p)){
          return true;
@@ -167,21 +177,22 @@ bool String(Program *p){
    char* string = (char*)ncalloc(len+1, sizeof(char));
    char* string2 = (char*)ncalloc(len-2+1, sizeof(char));
    strcpy(string, p->wds[p->cw]);
-   strncpy(string2, string+1, len-2);   
-   FILE* fp = fopen(string2, "r");
-   if(fp==NULL){
-      fprintf(stderr, "Cannot open file");
-   }
-   fscanf(fp, "%d", &p->variable[p->pos].height);
-   fscanf(fp, "%d", &p->variable[p->pos].width);
-   p->variable[p->pos].num = (int**)n2dcalloc(p->variable[p->pos].height, p->variable[p->pos].width, sizeof(int));
-   for(int j=0; j<p->variable[p->pos].height; j++){ //row
-      for(int i=0; i<p->variable[p->pos].width; i++){ //col
-         fscanf(fp, "%d", &p->variable[p->pos].num[j][i]);
+   strncpy(string2, string+1, len-2);
+   if(strsame(p->wds[p->cw-1], "READ")){
+      FILE* fp = fopen(string2, "r");
+      if(fp==NULL){
+         fprintf(stderr, "Cannot open file");
       }
+      fscanf(fp, "%d", &p->variable[p->pos].height);
+      fscanf(fp, "%d", &p->variable[p->pos].width);
+      p->variable[p->pos].num = (int**)n2dcalloc(p->variable[p->pos].height, p->variable[p->pos].width, sizeof(int));
+      for(int j=0; j<p->variable[p->pos].height; j++){ //row
+         for(int i=0; i<p->variable[p->pos].width; i++){ //col
+            fscanf(fp, "%d", &p->variable[p->pos].num[j][i]);
+         }
+      }
+      fclose(fp);
    }
-   fclose(fp);
-
    int count = 0;
    for(int i=0; i<len; i++){
       if(string[i] == '"'){
@@ -762,7 +773,7 @@ bool Create(Program *p){
          ERROR("Col error");
       }
       p->cw = p->cw + 1;
-      if(!Varname(p)){ //TODO: check varname valid first b4 allocating space?
+      if(!Varname(p)){
          ERROR("Varname error");
       }
       return true;
@@ -824,9 +835,8 @@ bool Loop(Program *p){
       ERROR("Integer error");
    }
    p->looppos = (int) p->wds[p->cw-1][1] - 'A';
-   // printf("%d\n", p->pos);
    p->maxloop = atoi(p->wds[p->cw]); //10
-   p->variable[p->looppos] = MakeIntMatrix(0); //TODO
+   // p->variable[p->looppos] = MakeIntMatrix(0); //TODO
    // printf("num %d\n", p->variable[p->pos].num[0][0]);
 
    p->cw = p->cw + 1;
@@ -834,13 +844,7 @@ bool Loop(Program *p){
       ERROR("Missing {");
    }
    p->cw = p->cw + 1;
-
-   // int count = 1;
-   // while(count <= p->variable[p->looppos].num[0][0]){
-   //    InstrcList(p);
-   // }
-   // count++;
-   p->variable[p->looppos].num[0][0] += 1; //TODO
+   // p->variable[p->looppos].num[0][0] += 1; //TODO
    InstrcList(p);
    return true;
 }
@@ -888,7 +892,7 @@ void stack_push(stack* s, var* d)
       s->capacity = s->capacity*SCALEFACTOR;
    }
    if(s->a[s->size].height == 0){
-      s->a[s->size].num = (int**)n2dcalloc(d->height, d->width, sizeof(int)); //TODO FREE
+      s->a[s->size].num = (int**)n2dcalloc(d->height, d->width, sizeof(int));
    }
    s->a[s->size].height = d->height;
    s->a[s->size].width = d->width;
@@ -925,7 +929,7 @@ bool stack_free(stack* s)
    if(s==NULL){
       return true;
    }
-   for(int i=0; i<s->capacity; i++){  //TODO: change back to s->size
+   for(int i=0; i<s->capacity; i++){
       n2dfree(s->a[i].num, s->a[i].height);
    }
    free(s->a);
@@ -949,7 +953,7 @@ void FreeNum(var temp1, var temp2){
 
 void StackToVar(Program *p){
    // if(p->workingpos != p->pos && p->workingpos >= 0){
-      p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[p->stack->size-1].height, p->stack->a[p->stack->size-1].width, sizeof(int)); //TODO FREE
+      p->variable[p->pos].num = (int**)n2dcalloc(p->stack->a[p->stack->size-1].height, p->stack->a[p->stack->size-1].width, sizeof(int));
    // }
    p->variable[p->pos].height = p->stack->a[p->stack->size-1].height;
    p->variable[p->pos].width = p->stack->a[p->stack->size-1].width;
@@ -1017,6 +1021,22 @@ bool Push(Program *p){
    return false;
 }
 
-
+bool stack_clear(stack* s) //TODO: clear stack after ";", }} stop, nested loop
+{
+   if((s == NULL) || (s->size < 1)){
+      return false;
+   }
+   s->size = 0;
+   s->a[s->size].height = 0;
+   s->a[s->size].width = 0;
+   // temp->num = (int**)n2dcalloc(temp->height, temp->width, sizeof(int));
+   for(int j=0; j<temp->height; j++){ //row
+      for(int i=0; i<temp->width; i++){ //col
+         temp->num[j][i] = s->a[s->size].num[j][i];
+         // printf("word: %d\n", temp->num[j][i]);
+      }
+   }
+   return true;
+}
 
 #endif
