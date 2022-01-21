@@ -12,13 +12,23 @@
 // #define FORMATSTR "%i"
 // #define ELEMSIZE 20
 // #define STACKTYPE "Linked"
-#define BIGNUM 1000
+#define BIGNUM 100
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
 #define CHARACTER 26
 #define SCALEFACTOR 2
-#define FIXEDSIZE 100
+#define FIXEDSIZE 10
 #define strsame(A,B) (strcmp(A, B)==0)
+#define CW (int)(p->wds[p->cw][1])-'A'
+#define CW_minus2 (int)(p->wds[p->cw-2][1])-'A'
+#define CW_minus1 (int)(p->wds[p->cw-1][1])-'A'
+#define CW_plus2 (int)(p->wds[p->cw+2][1])-'A'
+#define CW_plus1 (int)(p->wds[p->cw+1][1])-'A'
+#define n1wordback p->cw-1
+#define n2wordsback p->cw-2
+#define n1wordforward p->cw+1
+#define n2wordsforward p->cw+2
+
 #ifdef TEST
    #define ERROR(PHRASE) { return false; }
 #else
