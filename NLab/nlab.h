@@ -7,11 +7,7 @@
 #include <limits.h>
 
 #include "general.h"
-// #include "stack.h"
 
-// #define FORMATSTR "%i"
-// #define ELEMSIZE 20
-// #define STACKTYPE "Linked"
 #define BIGNUM 100
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
@@ -24,10 +20,10 @@
 #define CW_minus1 (int)(p->wds[p->cw-1][1])-'A'
 #define CW_plus2 (int)(p->wds[p->cw+2][1])-'A'
 #define CW_plus1 (int)(p->wds[p->cw+1][1])-'A'
-#define n1wordback p->cw-1
-#define n2wordsback p->cw-2
-#define n1wordforward p->cw+1
-#define n2wordsforward p->cw+2
+#define _1wordback p->cw-1
+#define _2wordsback p->cw-2
+#define _1wordforward p->cw+1
+#define _2wordsforward p->cw+2
 
 #ifdef TEST
    #define ERROR(PHRASE) { return false; }
@@ -40,15 +36,13 @@
 
 
 struct var{
-   int** num; //n2dcalloc
+   int** num;
    int height;
    int width;
-   // int loopcount;
 };
 typedef struct var var;
 
 struct stack {
-   /* Underlying array */
    var* a;
    int size;
    int capacity;
@@ -85,6 +79,7 @@ bool Row(Program *p);
 bool Col(Program *p);
 bool FileName(Program *p);
 bool Loop(Program *p);
+#ifdef INTERP
 void AssignValues(Program *p, int pos, int value);
 void AllocSpace(Program *p, int h, int w, int pos);
 stack* stack_init(void);
@@ -92,9 +87,26 @@ void stack_push(stack* s, var* d);
 bool stack_free(stack* s);
 bool stack_pop(stack* s, var* temp);
 var MakeIntMatrix(int num);
-// void FreeNum(var temp);
-void FreeNum(var temp1, var temp2);
+void FreeNum(var temp1, var temp2, var temp3);
 void StackToVar(Program *p);
-void StackToVar_working(Program *p);
-// void StackToVar(Program *p, int pos);
-bool Push(Program *p);
+bool Pushable(Program *p);
+bool Pushable_VarFirst(Program *p);
+bool Pushable_IntFirst(Program *p);
+void PrintVar(Program *p, int pos);
+void ReadArray(char string2[], Program *p);
+var TempVarWithBounds(var tempvar1);
+var PadZeros(var tempvar1);
+void CountTrueValues(var tempvar_bound, var tempvar1);
+void PushPrevItem(Program *p);
+var TempVarForResult(var tempvar2);
+void PushResult(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void U_NOT(Program *p);
+void U_EIGHTCOUNT(Program *p);
+void B_AND(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_OR(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_GREATER(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_LESS(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_ADD(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_TIMES(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_EQUALS(Program *p, var tempvar1, var tempvar2, var tempvar3);
+#endif

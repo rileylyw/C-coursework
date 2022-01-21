@@ -15,6 +15,10 @@
         "system_error": "c",
         "functional": "c",
         "tuple": "c",
-        "utility": "c"
+        "utility": "c",
+        "random": "c",
+        "bitset": "c",
+        "initializer_list": "c",
+        "hashtable": "c"
     }
 }
