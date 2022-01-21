@@ -5,7 +5,24 @@ void readFile(char file[], Program* p){
    if(fp==NULL){
       fprintf(stderr, "Cannot open file");
    }
-   char buffer[BIGNUM];
+   // char buffer[MAXNUMTOKENS];
+   // char comment[MAXNUMTOKENS];
+
+
+   // int j=0;
+   // while(fscanf(fp, "%s[^\n]\n", buffer) != EOF){
+   //    if(strsame(&buffer[0],  "#")){
+   //       fscanf(fp, "%s[^\n]\n", comment);
+      // }
+      // else{
+      //    // strcpy(p->wds[j++], buffer);
+      //    fscanf(fp, "%s[^\n]\n", buffer);
+      // }
+   // }
+
+
+
+   char buffer[MAXNUMTOKENS];
    int j=0;
    while(fscanf(fp, "%s", buffer) != EOF){
       strcpy(p->wds[j++], buffer);

@@ -29,8 +29,8 @@
    #define ERROR(PHRASE) { return false; }
 #else
    #define ERROR(PHRASE) { fprintf(stderr, \
-            "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
-            __FILE__, __LINE__); \
+            "Error: %s, occurred in line %d\n", PHRASE, \
+             __LINE__); \
             exit(EXIT_FAILURE); }
 #endif
 

@@ -1,4 +1,4 @@
-BEGIN {
+BEGIN 
    READ "lglider.arr" $A
    LOOP $J 3 {
       LOOP $I 2 {
