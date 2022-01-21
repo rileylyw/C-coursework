@@ -962,25 +962,36 @@ bool Loop(Program *p){
    }
    if(strsame(p->wds[p->cw], "{")){
       int ptr = 1; //TODO: reset counter
-      p->looppos = (int) p->wds[p->cw-2][1] - 'A';
-      p->variable[p->looppos] = MakeIntMatrix(1); //init $I=1
+      int looppos = (int) p->wds[p->cw-2][1] - 'A';
+      // p->looppos = (int) p->wds[p->cw-2][1] - 'A';
+      // p->variable[looppos] = MakeIntMatrix(1); //init $I=1
+      if(p->variable[looppos].num==NULL){
+         p->variable[looppos].num = (int**)n2dcalloc(1, 1, sizeof(int));
+      }
+      p->variable[looppos].height = 1;
+      p->variable[looppos].width = 1;
+      p->variable[looppos].num[0][0] = 1;
       // p->variable[p->looppos].loopstart = p->cw + 1; //PRINT
       // p->variable[p->looppos].loopcount = 1;
       // p->variable[p->looppos].maxloop = atoi(p->wds[p->cw-1]); //10
+      printf("p->looppos %d\n", looppos);
       int temp = p->cw + 1; //go back to 
       int maxloop = atoi(p->wds[p->cw-1]);
+      printf("maxloop %d\n", maxloop);
       // while(ptr <= x){
       while(ptr <= maxloop){
          // printf("p->wds[p->cw] %s\n", p->wds[temp]);
          p->cw = temp;
          if(InstrcList(p)){
-            p->variable[p->looppos].num[0][0]+=1;
+            ptr = p->variable[looppos].num[0][0];
             ptr++;
+            p->variable[looppos].num[0][0] = ptr;
          }
          // printf("POS %d\n",p->looppos);
          // printf("maxxloop %d\n", p->variable[p->looppos].maxloop);
          // ptr++;
       }
+            // n2dfree(p->variable[looppos].num, 1);
    }
    p->cw = p->cw + 1;
    // p->variable[p->looppos].num[0][0] += 1; //TODO

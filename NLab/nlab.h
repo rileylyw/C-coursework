@@ -51,8 +51,6 @@ struct prog{
    var variable[CHARACTER];
    int pos;
    int workingpos;
-   int looppos;
-
    stack* stack;
 };
 typedef struct prog Program;

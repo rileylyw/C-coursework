@@ -5,7 +5,11 @@ BEGIN {
 
       SET $B := $A U-EIGHTCOUNT ;
       SET $D := $B 3 B-EQUALS ;
+      SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ;
       SET $E := $A U-NOT $D B-AND $C B-OR ;
 
+      PRINT $I
+      PRINT $E
+      SET $A := $E ;
    }
 }
