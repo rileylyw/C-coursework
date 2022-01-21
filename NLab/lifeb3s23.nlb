@@ -7,7 +7,5 @@ BEGIN {
       SET $D := $B 3 B-EQUALS ;
       SET $E := $A U-NOT $D B-AND $C B-OR ;
 
-      PRINT $I
-
    }
 }

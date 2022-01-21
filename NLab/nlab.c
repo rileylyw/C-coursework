@@ -902,12 +902,11 @@ bool Loop(Program *p){
       ERROR("Missing {");
    }
    if(strsame(p->wds[p->cw], "{")){
-      int ptr = 1;
+      int ptr = 1; //TODO: reset counter
       p->looppos = (int) p->wds[p->cw-2][1] - 'A';
-      // int x = atoi(p->wds[p->cw-1]);
       // p->variable[p->looppos] = MakeIntMatrix(1); //init $I=1
       // p->variable[p->looppos].loopstart = p->cw + 1; //PRINT
-      p->variable[p->looppos].loopcount = 1;
+      // p->variable[p->looppos].loopcount = 1;
       // p->variable[p->looppos].maxloop = atoi(p->wds[p->cw-1]); //10
       int temp = p->cw + 1;
       int maxloop = atoi(p->wds[p->cw-1]);

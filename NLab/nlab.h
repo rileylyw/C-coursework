@@ -33,9 +33,7 @@ struct var{
    int** num; //n2dcalloc
    int height;
    int width;
-   int loopstart;
-   int maxloop;
-   int loopcount;
+   // int loopcount;
 };
 typedef struct var var;
 
