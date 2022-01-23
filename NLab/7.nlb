@@ -1,0 +1,6 @@
+BEGIN {
+    ONES 3 4 $A
+    ONES 3 4 $B 
+    SET $F := $A $B B-ADD 2 B-EQUALS 3 B-AND ;
+    PRINT $F
+}

@@ -5,28 +5,28 @@ void readFile(char file[], Program* p){
    if(fp==NULL){
       fprintf(stderr, "Cannot open file");
    }
-   // char buffer[MAXNUMTOKENS];
-   // char comment[MAXNUMTOKENS];
-
-
-   // int j=0;
-   // while(fscanf(fp, "%s[^\n]\n", buffer) != EOF){
-   //    if(strsame(&buffer[0],  "#")){
-   //       fscanf(fp, "%s[^\n]\n", comment);
-      // }
-      // else{
-      //    // strcpy(p->wds[j++], buffer);
-      //    fscanf(fp, "%s[^\n]\n", buffer);
-      // }
-   // }
-
-
-
+   int i = 0;
    char buffer[MAXNUMTOKENS];
-   int j=0;
-   while(fscanf(fp, "%s", buffer) != EOF){
-      strcpy(p->wds[j++], buffer);
+   char comment[MAXNUMTOKENS];
+   char wds[MAXNUMTOKENS];
+   while(fscanf(fp, "%[^\n]\n", buffer) != EOF){
+      if(buffer[0]=='#'){
+         strcpy(comment, buffer);
+      }
+      else{
+         strcpy(wds, buffer);
+         char *pch = strtok(wds, " ");
+         while(pch != NULL){
+            strcpy(p->wds[i++], pch);
+            pch = strtok(NULL, " ");
+         }
+      }
    }
+   // char buffer[MAXNUMTOKENS];
+   // int j=0;
+   // while(fscanf(fp, "%s", buffer) != EOF){
+   //    strcpy(p->wds[j++], buffer);
+   // }
    fclose(fp);
 }
 
@@ -348,8 +348,6 @@ bool BinaryOp(Program *p){
       p->cw = _1wordback;
       tempvar3 = TempVarForResult(tempvar2);
       B_GREATER(p, tempvar1, tempvar2, tempvar3);
-      stack_push(p->stack, &tempvar3);
-      FreeNum(tempvar1, tempvar2, tempvar3);
       PushResult(p, tempvar1, tempvar2, tempvar3);
       #endif
       return true;
@@ -363,8 +361,6 @@ bool BinaryOp(Program *p){
       p->cw = _1wordback;
       tempvar3 = TempVarForResult(tempvar2);
       B_LESS(p, tempvar1, tempvar2, tempvar3);
-      stack_push(p->stack, &tempvar3);
-      FreeNum(tempvar1, tempvar2, tempvar3);
       PushResult(p, tempvar1, tempvar2, tempvar3);
       #endif
       return true;

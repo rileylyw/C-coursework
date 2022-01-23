@@ -1,5 +1,6 @@
+# John Conway's Game of LIFE (B3/S23)
 BEGIN {
-
+#test 123
    READ "lglider.arr" $A
    LOOP $I 10 {
 
