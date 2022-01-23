@@ -1,4 +1,4 @@
 BEGIN {
-   SET $A := 2 ;
+   SET $A := 5 ;
    PRINT $A
 }

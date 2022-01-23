@@ -1,0 +1,7 @@
+BEGIN {
+   READ "lblock.arr" $A
+   SET $B := $A 1 B-LESS ;
+   SET $D := $B 3 B-TIMES 6 B-AND 2 B-EQUALS ;
+
+   PRINT $D
+}

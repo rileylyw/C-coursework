@@ -1,0 +1,8 @@
+BEGIN {
+   READ "lglider.arr" $A
+   SET $B := $A 3 B-AND ;
+   SET $E := $B 3 B-EQUALS ;
+   SET $E := $E U-NOT ;
+
+   PRINT $E
+}

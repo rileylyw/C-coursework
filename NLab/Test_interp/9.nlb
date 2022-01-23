@@ -1,0 +1,9 @@
+BEGIN {
+   ONES 10 10 $A
+   SET $A := $A U-EIGHTCOUNT ;
+   SET $B := $A 5 B-EQUALS ;
+
+   PRINT $A
+   PRINT "---"
+   PRINT $B
+}

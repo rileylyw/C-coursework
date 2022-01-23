@@ -236,7 +236,7 @@ bool Polish(Program *p){
    else if(BinaryOp(p)){
       return true;
    }
-   ERROR("Polish error");
+   ERROR("Missing ;");
 }
 
 bool PushDown(Program *p){
@@ -404,8 +404,8 @@ bool BinaryOp(Program *p){
       #endif
       return true;
    }
-   // return false;
-   ERROR("BinaryOp error");
+   return false;
+   // ERROR("BinaryOp error");
 }
 
 bool Create(Program *p){
@@ -422,6 +422,11 @@ bool Create(Program *p){
       p->cw = _1wordforward;
       if(!Varname(p)){
          ERROR("Varname error");
+      }
+      if(!(strsame(p->wds[_1wordforward], "PRINT") || strsame(p->wds[_1wordforward], "SET") ||\
+      strsame(p->wds[_1wordforward], "ONES") || strsame(p->wds[_1wordforward], "READ") ||\
+      strsame(p->wds[_1wordforward], "LOOP"))){
+         ERROR("Not valid instruction");
       }
       return true;
    }
