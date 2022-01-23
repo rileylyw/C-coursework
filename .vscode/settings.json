@@ -19,6 +19,9 @@
         "random": "c",
         "bitset": "c",
         "initializer_list": "c",
-        "hashtable": "c"
+        "hashtable": "c",
+        "assert.h": "c",
+        "vector": "c",
+        "cmath": "c"
     }
 }

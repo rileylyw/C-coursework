@@ -1,0 +1,9 @@
+Added functions:
+-B-MINUS
+   does arithmetic subtraction
+-B-DIVIDE-RU
+   does division with roundup
+-B-DIVIDE-RD
+   does division with rounddown
+-comment function
+   if the beginning of the line includes "#", the whole line will be ignored

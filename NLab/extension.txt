@@ -1,0 +1,33 @@
+*** How to run the test ***
+make extension (at NLab folder)
+make extension_s (at NLab folder)
+make extension_v (at NLab folder)
+
+cd Extension
+
+run ./extension ../*.nlb
+run ./extension_s ../*.nlb
+run ./extension_v ../*.nlb
+
+
+Testing program outputs
+
+*** How to run the test ***
+make test_interp_shell
+cd Extension folder
+
+run ./test_extension.sh (at Extension folder)
+
+*** Description ***
+It tests the program output (output.txt) against the expected output (*.txt), the *.nlb files contain different combinations of functions. If the program output matches the expected output, "Test *.txt OK" will be shown. Otherwise, "Test *.txt NOT OK" will be shown. Bash script is used to reduce manual typing of the program.exe and *.nlb files.
+
+
+Added functions:
+-B-MINUS
+   does arithmetic subtraction
+-B-DIVIDE-RU
+   does division with roundup
+-B-DIVIDE-RD
+   does division with rounddown
+-comment function
+   if the beginning of the line includes "#", the whole line will be ignored

@@ -1,4 +1,4 @@
-#include "nlab.h"
+#include "extension.h"
 
 void readFile(char file[], Program* p){
    FILE* fp=fopen(file, "r");
@@ -313,6 +313,19 @@ bool BinaryOp(Program *p){
       #endif
       return true;
    }
+   else if(strsame(p->wds[p->cw], "B-MINUS")){
+      #ifdef INTERP
+      PushPrevItem(p);
+      var tempvar1, tempvar2, tempvar3;
+      stack_pop(p->stack, &tempvar1);
+      stack_pop(p->stack, &tempvar2);
+      p->cw = _1wordback;
+      tempvar3 = TempVarForResult(tempvar2);
+      B_MINUS(p, tempvar1, tempvar2, tempvar3);
+      PushResult(p, tempvar1, tempvar2, tempvar3);
+      #endif
+      return true;
+   }
    else if(strsame(p->wds[p->cw], "B-OR")){
       #ifdef INTERP
       PushPrevItem(p);
@@ -374,6 +387,32 @@ bool BinaryOp(Program *p){
       p->cw = _1wordback;
       tempvar3 = TempVarForResult(tempvar2);
       B_TIMES(p, tempvar1, tempvar2, tempvar3);
+      PushResult(p, tempvar1, tempvar2, tempvar3);
+      #endif
+      return true;
+   }
+   else if(strsame(p->wds[p->cw], "B-DIVIDE-RU")){
+      #ifdef INTERP
+      PushPrevItem(p);
+      var tempvar1, tempvar2, tempvar3;
+      stack_pop(p->stack, &tempvar1);
+      stack_pop(p->stack, &tempvar2);
+      p->cw = _1wordback;
+      tempvar3 = TempVarForResult(tempvar2);
+      B_DIVIDE_ROUNDUP(p, tempvar1, tempvar2, tempvar3);
+      PushResult(p, tempvar1, tempvar2, tempvar3);
+      #endif
+      return true;
+   }
+   else if(strsame(p->wds[p->cw], "B-DIVIDE-RD")){
+      #ifdef INTERP
+      PushPrevItem(p);
+      var tempvar1, tempvar2, tempvar3;
+      stack_pop(p->stack, &tempvar1);
+      stack_pop(p->stack, &tempvar2);
+      p->cw = _1wordback;
+      tempvar3 = TempVarForResult(tempvar2);
+      B_DIVIDE_ROUNDDOWN(p, tempvar1, tempvar2, tempvar3);
       PushResult(p, tempvar1, tempvar2, tempvar3);
       #endif
       return true;
@@ -919,6 +958,25 @@ void B_ADD(Program *p, var tempvar1, var tempvar2, var tempvar3){
    }
 }
 
+void B_MINUS(Program *p, var tempvar1, var tempvar2, var tempvar3){
+   if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+      for(int j=0; j<tempvar2.height; j++){ //row
+         for(int i=0; i<tempvar2.width; i++){ //col
+            tempvar3.num[j][i] = tempvar2.num[j][i] - tempvar1.num[0][0];
+         }
+      }
+      p->cw = _1wordforward;
+   }
+   else if (Varname(p)){
+      for(int j=0; j<tempvar2.height; j++){ //row
+         for(int i=0; i<tempvar2.width; i++){ //col
+            tempvar3.num[j][i] = tempvar2.num[j][i] - tempvar1.num[j][i];
+         }
+      }
+      p->cw = _1wordforward;
+   }
+}
+
 void B_TIMES(Program *p, var tempvar1, var tempvar2, var tempvar3){
    if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
       for(int j=0; j<tempvar2.height; j++){ //row
@@ -938,15 +996,51 @@ void B_TIMES(Program *p, var tempvar1, var tempvar2, var tempvar3){
    }
 }
 
+void B_DIVIDE_ROUNDUP(Program *p, var tempvar1, var tempvar2, var tempvar3){
+   if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+      for(int j=0; j<tempvar2.height; j++){ //row
+         for(int i=0; i<tempvar2.width; i++){ //col
+            tempvar3.num[j][i] = ceil((double)tempvar2.num[j][i] / tempvar1.num[0][0]);
+         }
+      }
+      p->cw = _1wordforward;
+   }
+   else if (Varname(p)){
+      for(int j=0; j<tempvar2.height; j++){ //row
+         for(int i=0; i<tempvar2.width; i++){ //col
+            tempvar3.num[j][i] = ceil((double)tempvar2.num[j][i] / tempvar1.num[j][i]);
+         }
+      }
+      p->cw = _1wordforward;
+   }
+}
+
+void B_DIVIDE_ROUNDDOWN(Program *p, var tempvar1, var tempvar2, var tempvar3){
+   if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
+      for(int j=0; j<tempvar2.height; j++){ //row
+         for(int i=0; i<tempvar2.width; i++){ //col
+            tempvar3.num[j][i] = floor((double)tempvar2.num[j][i] / tempvar1.num[0][0]);
+         }
+      }
+      p->cw = _1wordforward;
+   }
+   else if (Varname(p)){
+      for(int j=0; j<tempvar2.height; j++){ //row
+         for(int i=0; i<tempvar2.width; i++){ //col
+            tempvar3.num[j][i] = floor((double)tempvar2.num[j][i] / tempvar1.num[j][i]);
+         }
+      }
+      p->cw = _1wordforward;
+   }
+}
+
 void B_EQUALS(Program *p, var tempvar1, var tempvar2, var tempvar3){
    if(Integer(p) || (Varname(p) && p->variable[p->workingpos].height==1 && p->variable[p->workingpos].width==1)){
       for(int j=0; j<tempvar2.height; j++){ //row
          for(int i=0; i<tempvar2.width; i++){ //col
             tempvar3.num[j][i] = tempvar2.num[j][i] == tempvar1.num[0][0];
          }
-         // printf("\n");
       }
-         // printf("\n");
       p->cw = _1wordforward;
    }
    else if (Varname(p)){
@@ -959,5 +1053,5 @@ void B_EQUALS(Program *p, var tempvar1, var tempvar2, var tempvar3){
    }
 }
 
-
 #endif
+

@@ -2,26 +2,44 @@ TESTING FOR PARSER:
 
 *** How to run the test ***
 -make test_parse
-      test_parse_s
+ make test_parse_s
 
+run ./test_parse
+run ./test_parse_s
 
--used assert testing inside test.c
--passed in temporary strings as tokens to check if the grammar is correct
+*** Description ***
+Used assert testing inside test_parse.c. Temporary strings are passed into the program as token to check if the grammar is correct. -DTEST is included in the makefile for compilation, which allows the program to keep running even when there's error, since the functions will return false instead of executing non-zero exit.
+
 
 
 
 TESTING FOR INTERP:
 
+1. For testing values inside variables
 
-1. For testing C functions
 *** How to run the test ***
 make test_interp
      test_interp_s 
 
-2. For testing program outputs
-*** How to run the test ***
--make test_interp_shell
--cd Test_interp folder
--run ./test_interp.sh at terminal
+run ./test_interp > /dev/null
 
--it tests the program output (output.txt) against the expected output (*.txt), the *.nlb files contain different combinations of functions. If the program output matches the expected output, "Test *.txt OK" will be shown. Otherwise, "Test *.txt NOT OK" will be shown.
+*** Description ***
+Used assert testing inside test_interp.c to test the values inside variable struct in the program. -DTEST and -DINTERP are included in the makefile for compilation. 
+
+
+2. For testing program outputs
+
+*** How to run the test ***
+make test_interp_shell
+cd Test_interp folder
+
+run ./test_interp.sh (at Test_interp folder)
+
+*** Description ***
+It tests the program output (output.txt) against the expected output (*.txt), the *.nlb files contain different combinations of functions. If the program output matches the expected output, "Test *.txt OK" will be shown. Otherwise, "Test *.txt NOT OK" will be shown. Bash script is used to reduce manual typing of the program.exe and *.nlb files.
+
+
+
+
+
+

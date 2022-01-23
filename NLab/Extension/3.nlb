@@ -1,0 +1,8 @@
+BEGIN {
+   LOOP $I 3 {
+      SET $A := 100 ;
+      SET $B := $A 3 B-MINUS 3 B-DIVIDE-RD ;
+      SET $C := $B ;
+      PRINT $B
+   }
+}

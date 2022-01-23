@@ -1,0 +1,6 @@
+BEGIN {
+#TESTING 123123132 ignored line
+   SET $A := 10 ;
+   SET $B := $A 3 B-MINUS 3 B-DIVIDE-RU ;
+   PRINT $B
+}

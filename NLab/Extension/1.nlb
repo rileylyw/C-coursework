@@ -1,0 +1,5 @@
+BEGIN {
+   ONES 3 3 $A
+   SET $B := $A 3 B-MINUS ;
+   PRINT $B
+}

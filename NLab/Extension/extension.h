@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
+#include <math.h>
 
-#include "general.h"
+#include "../general.h"
 
-#define BIGNUM 500
+#define BIGNUM 100
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
 #define CHARACTER 26
@@ -33,6 +34,7 @@
              __LINE__); \
             exit(EXIT_FAILURE); }
 #endif
+
 
 struct var{
    int** num;
@@ -106,6 +108,9 @@ void B_OR(Program *p, var tempvar1, var tempvar2, var tempvar3);
 void B_GREATER(Program *p, var tempvar1, var tempvar2, var tempvar3);
 void B_LESS(Program *p, var tempvar1, var tempvar2, var tempvar3);
 void B_ADD(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_MINUS(Program *p, var tempvar1, var tempvar2, var tempvar3);
 void B_TIMES(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_DIVIDE_ROUNDUP(Program *p, var tempvar1, var tempvar2, var tempvar3);
+void B_DIVIDE_ROUNDDOWN(Program *p, var tempvar1, var tempvar2, var tempvar3);
 void B_EQUALS(Program *p, var tempvar1, var tempvar2, var tempvar3);
 #endif

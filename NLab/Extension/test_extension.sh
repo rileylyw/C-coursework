@@ -7,14 +7,13 @@ e_code=$?
 
 # Loop the array
 for file in "${!file_base[@]}"; do
-    ./interp "${file_base[file]}" | tee output.txt >/dev/null
+    ./extension "${file_base[file]}" | tee output.txt >/dev/null
     if cmp -s "output.txt" "${file_base2[file]}" ; then
     	#printf "%s is in %s\n" "${file_base[file]}" "${file_base2[file]}"
     	printf " Test %s OK\n" "${file_base2[file]}"
     else
     	printf " Test %s NOT OK\n" "${file_base2[file]}" 
     fi
-
 
 done
 
