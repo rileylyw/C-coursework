@@ -225,7 +225,7 @@ bool Polish(Program *p){
    else if(BinaryOp(p)){
       return true;
    }
-   ERROR("Missing ;");
+   ERROR("Missing ; | Incorrect assignment | BinaryOp error | UnaryOp error");
 }
 
 bool PushDown(Program *p){

@@ -1,0 +1,5 @@
+BEGIN {
+   SET $B := 3 ;
+   SET $B := $B UNOT ;
+   PRINT $B
+}

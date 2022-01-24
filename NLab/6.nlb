@@ -1,5 +1,0 @@
-BEGIN {
-    ONES 3 4 $F 
-    SET $F := $F 2 B-LESS 3 B-OR 6 B-AND ;
-    PRINT $F
-}

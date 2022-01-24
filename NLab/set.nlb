@@ -1,5 +1,5 @@
 BEGIN {
-   ONES 3 3 $A 
-   SET $B := $A 3 B-ADD ;
+   ONES 3 4 $B
+   ONES 3 4 $B
    PRINT $B
 }

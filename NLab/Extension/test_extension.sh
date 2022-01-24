@@ -1,7 +1,7 @@
 #!/bin/bash
 
-declare -a file_base=("1.nlb" "2.nlb" "3.nlb" "4.nlb" "5.nlb" "6.nlb" "7.nlb" "8.nlb" "9.nlb" "10.nlb" )
-declare -a file_base2=("1.txt" "2.txt" "3.txt" "4.txt" "5.txt" "6.txt" "7.txt" "8.txt" "9.txt" "10.txt" )
+declare -a file_base=("1.nlb" "2.nlb" "3.nlb"  )
+declare -a file_base2=("1.txt" "2.txt" "3.txt" )
 
 e_code=$?
 
